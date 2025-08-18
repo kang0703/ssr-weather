@@ -37,7 +37,7 @@ export async function getCurrentWeather(lat: number, lon: number, env?: Cloudfla
       throw new Error('날씨 정보를 가져오는데 실패했습니다.');
     }
     
-    const data = await response.json();
+    const data = await response.json() as any;
     console.log('OpenWeather API 응답 데이터:', data);
     
     return {
@@ -76,13 +76,13 @@ export async function getWeatherForecast(lat: number, lon: number, env?: Cloudfl
       throw new Error('날씨 예보를 가져오는데 실패했습니다.');
     }
     
-    const data = await response.json();
+    const data = await response.json() as any;
     console.log('OpenWeather Forecast API 응답 데이터:', data);
     
     // 5일 예보 데이터 처리 (하루에 한 번씩)
     const dailyForecasts = data.list.filter((item: any, index: number) => index % 8 === 0);
     
-    return dailyForecasts.slice(1, 6).map((item: any) => ({
+    return dailyForecasts.slice(0, 5).map((item: any) => ({
       date: new Date(item.dt * 1000).toLocaleDateString('ko-KR', { 
         month: 'short', 
         day: 'numeric',
