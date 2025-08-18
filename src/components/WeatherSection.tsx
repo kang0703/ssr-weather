@@ -7,13 +7,19 @@ export default function WeatherSection() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [forecast, setForecast] = useState<ForecastData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
         // 현재 위치 가져오기 (기본값: 서울)
         const lat = 37.5665;
         const lon = 126.9780;
+
+        console.log('날씨 데이터 요청:', { lat, lon });
 
         // API 라우트를 통해 데이터 가져오기
         const [weatherRes, forecastRes] = await Promise.all([
@@ -21,15 +27,24 @@ export default function WeatherSection() {
           fetch(`/api/weather?lat=${lat}&lon=${lon}&type=forecast`)
         ]);
 
+        console.log('날씨 API 응답 상태:', { weather: weatherRes.status, forecast: forecastRes.status });
+
         if (weatherRes.ok && forecastRes.ok) {
           const weatherData = await weatherRes.json();
           const forecastData = await forecastRes.json();
           
+          console.log('날씨 데이터 받음:', { weather: weatherData, forecast: forecastData });
+          
           setWeather(weatherData);
           setForecast(forecastData);
+        } else {
+          const weatherError = await weatherRes.json().catch(() => ({}));
+          const forecastError = await forecastRes.json().catch(() => ({}));
+          throw new Error(`API 요청 실패: ${weatherError.error || forecastError.error}`);
         }
       } catch (error) {
         console.error('날씨 데이터 가져오기 실패:', error);
+        setError('날씨 정보를 가져오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -42,8 +57,14 @@ export default function WeatherSection() {
     return <div className="bg-white rounded-lg shadow-lg p-6">로딩 중...</div>;
   }
 
-  if (!weather) {
-    return <div className="bg-white rounded-lg shadow-lg p-6">날씨 정보를 가져올 수 없습니다.</div>;
+  if (error || !weather) {
+    return (
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="text-center text-red-600">
+          <p>{error || '날씨 정보를 가져올 수 없습니다.'}</p>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -1,11 +1,13 @@
 import { NextRequest } from 'next/server';
 import { getCurrentWeather, getWeatherForecast } from '@/lib/weather';
 
-export async function GET(request: NextRequest, { params }: { params: any }, { env }: { env: CloudflareEnv }) {
+export async function GET(request: NextRequest, { params }: { params: any }, context?: { env: CloudflareEnv }) {
   const { searchParams } = new URL(request.url);
   const lat = searchParams.get('lat');
   const lon = searchParams.get('lon');
-  const type = searchParams.get('type'); // 'current' or 'forecast'
+  const type = searchParams.get('type');
+
+  console.log('Weather API 호출됨:', { lat, lon, type });
 
   if (!lat || !lon) {
     return Response.json({ error: '위도와 경도가 필요합니다.' }, { status: 400 });
@@ -13,10 +15,10 @@ export async function GET(request: NextRequest, { params }: { params: any }, { e
 
   try {
     if (type === 'forecast') {
-      const forecast = await getWeatherForecast(parseFloat(lat), parseFloat(lon), env);
+      const forecast = await getWeatherForecast(parseFloat(lat), parseFloat(lon), context?.env);
       return Response.json(forecast);
     } else {
-      const weather = await getCurrentWeather(parseFloat(lat), parseFloat(lon), env);
+      const weather = await getCurrentWeather(parseFloat(lat), parseFloat(lon), context?.env);
       return Response.json(weather);
     }
   } catch (error) {

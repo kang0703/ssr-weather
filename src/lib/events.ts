@@ -7,8 +7,12 @@ export interface EventData {
   imageUrl?: string;
 }
 
-export async function getEventsByRegion(region: string, env?: CloudflareEnv): Promise<EventData[]> {
-  const apiKey = env?.PUBLIC_DATA_API_KEY || process.env.PUBLIC_DATA_API_KEY;
+export async function getEventsByRegion(region: string): Promise<EventData[]> {
+  const apiKey = process.env.PUBLIC_DATA_API_KEY;
+  if (!apiKey) {
+    throw new Error('공공데이터 API 키가 설정되지 않았습니다.');
+  }
+  
   const baseUrl = 'https://apis.data.go.kr/B551011/KorService2';
   
   try {

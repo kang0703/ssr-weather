@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getEventsByRegion, EventData } from '@/lib/events';
+import { EventData } from '@/lib/events';
 
 export default function EventsSection() {
   const [events, setEvents] = useState<EventData[]>([]);
@@ -12,10 +12,15 @@ export default function EventsSection() {
     async function fetchEvents() {
       try {
         setLoading(true);
-        // 기본적으로 서울 지역 행사 정보 가져오기
-        const eventsData = await getEventsByRegion('seoul');
-        setEvents(eventsData);
-        setError(null);
+        // API 라우트를 통해 행사 정보 가져오기
+        const response = await fetch('/api/events?region=seoul');
+        if (response.ok) {
+          const eventsData = await response.json();
+          setEvents(eventsData);
+          setError(null);
+        } else {
+          throw new Error('API 요청 실패');
+        }
       } catch (err) {
         console.error('행사 데이터 가져오기 실패:', err);
         setError('행사 정보를 가져오는데 실패했습니다.');
