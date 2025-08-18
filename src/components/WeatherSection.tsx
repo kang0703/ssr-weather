@@ -35,8 +35,8 @@ export default function WeatherSection() {
           
           console.log('날씨 데이터 받음:', { weather: weatherData, forecast: forecastData });
           
-          setWeather(weatherData);
-          setForecast(forecastData);
+          setWeather(weatherData as WeatherData);
+          setForecast(forecastData as ForecastData[]);
         } else {
           const weatherError = await weatherRes.json().catch(() => ({}));
           const forecastError = await forecastRes.json().catch(() => ({}));
