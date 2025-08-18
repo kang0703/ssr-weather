@@ -14,5 +14,9 @@
   "observability": {
     "enabled": true
   },
-  "upload_source_maps": true
+  "upload_source_maps": true,
+  "vars": {
+    "OPENWEATHER_API_KEY": "",
+    "PUBLIC_DATA_API_KEY": ""
+  }
 }
