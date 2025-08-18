@@ -40,7 +40,7 @@ export default function WeatherSection() {
         } else {
           const weatherError = await weatherRes.json().catch(() => ({}));
           const forecastError = await forecastRes.json().catch(() => ({}));
-          throw new Error(`API 요청 실패: ${weatherError.error || forecastError.error}`);
+          throw new Error(`API 요청 실패: ${(weatherError as any).error || (forecastError as any).error}`);
         }
       } catch (error) {
         console.error('날씨 데이터 가져오기 실패:', error);
