@@ -16,7 +16,7 @@ export default function EventsSection() {
         const response = await fetch('/api/events?region=seoul');
         if (response.ok) {
           const eventsData = await response.json();
-          setEvents(eventsData);
+          setEvents(eventsData as EventData[]);
           setError(null);
         } else {
           throw new Error('API 요청 실패');
