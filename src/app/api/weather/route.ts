@@ -8,6 +8,10 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
   const type = searchParams.get('type');
 
   console.log('Weather API 호출됨:', { lat, lon, type });
+  console.log('환경변수 확인:', { 
+    hasEnv: !!context?.env, 
+    hasApiKey: !!context?.env?.OPENWEATHER_API_KEY 
+  });
 
   if (!lat || !lon) {
     return Response.json({ error: '위도와 경도가 필요합니다.' }, { status: 400 });

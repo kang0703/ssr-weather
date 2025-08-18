@@ -26,6 +26,10 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
   const region = searchParams.get('region') || 'seoul';
 
   console.log('Events API 호출됨:', { region });
+  console.log('환경변수 확인:', { 
+    hasEnv: !!context?.env, 
+    hasApiKey: !!context?.env?.PUBLIC_DATA_API_KEY 
+  });
 
   try {
     // 환경별로 API 키 가져오기
@@ -37,7 +41,6 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
     const baseUrl = 'https://apis.data.go.kr/B551011/KorService2';
     const areaCode = getAreaCode(region);
     
-    // 🔥 여기가 핵심 수정 부분!
     // searchFestival1 → searchFestival2로 변경
     // 날짜 파라미터 추가
     const currentDate = new Date();
