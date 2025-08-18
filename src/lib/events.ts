@@ -26,8 +26,8 @@ export async function getEventsByRegion(region: string): Promise<EventData[]> {
     
     const data = await response.json();
     
-    if (data.response?.body?.items?.item) {
-      return data.response.body.items.item.map((item: any) => ({
+    if ((data as any).response?.body?.items?.item) {
+      return (data as any).response.body.items.item.map((item: any) => ({
         title: item.title || '제목 없음',
         startDate: item.eventstartdate || '',
         endDate: item.eventenddate || '',
