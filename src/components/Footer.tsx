@@ -1,8 +1,10 @@
+import Link from 'next/link';
+
 export default function Footer() {
   return (
     <footer className="bg-gray-50 border-t">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-4">갈래말래 날씨여행</h3>
             <p className="text-gray-600 text-sm">
@@ -11,21 +13,23 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="text-md font-semibold text-gray-900 mb-4">서비스</h4>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>실시간 날씨 정보</li>
-              <li>5일 날씨 예보</li>
-              <li>지역별 행사/축제</li>
-              <li>날씨별 추천 행사</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-md font-semibold text-gray-900 mb-4">문의</h4>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>비즈니스 문의</li>
-              <li>기술 지원</li>
-              <li>제휴 문의</li>
+            <h4 className="text-md font-semibold text-gray-900 mb-4">회사</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  소개
+                </Link>
+              </li>
+              <li>
+                <Link href="/business" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  비즈니스 문의
+                </Link>
+              </li>
+              <li>
+                <Link href="/patch-notes" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  패치노트
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
