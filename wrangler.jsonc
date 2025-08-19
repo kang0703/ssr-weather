@@ -14,5 +14,15 @@
   "observability": {
     "enabled": true
   },
-  "upload_source_maps": true
+  "upload_source_maps": true,
+  "routes": [
+    {
+      "pattern": "weathertour.org/*",
+      "zone_name": "weathertour.org"
+    },
+    {
+      "pattern": "www.weathertour.org/*",
+      "zone_name": "weathertour.org"
+    }
+  ]
 }
