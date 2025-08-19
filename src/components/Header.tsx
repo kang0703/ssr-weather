@@ -15,6 +15,7 @@ const regions = [
   { name: '경기도', path: '/gyeonggi' },
   { name: '충청북도', path: '/chungbuk' },
   { name: '충청남도', path: '/chungnam' },
+  { name: '전라북도', path: '/jeonbuk' },
   { name: '전라남도', path: '/jeonnam' },
   { name: '경상북도', path: '/gyeongbuk' },
   { name: '경상남도', path: '/gyeongnam' },
