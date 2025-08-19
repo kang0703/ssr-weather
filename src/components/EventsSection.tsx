@@ -8,6 +8,17 @@ export default function EventsSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 날짜 형식을 읽기 쉽게 변환하는 함수
+  const formatDate = (dateString: string): string => {
+    if (!dateString || dateString.length !== 8) return '날짜 정보 없음';
+    
+    const year = dateString.substring(0, 4);
+    const month = dateString.substring(4, 6);
+    const day = dateString.substring(6, 8);
+    
+    return `${year}.${month}.${day}`;
+  };
+
   useEffect(() => {
     async function fetchEvents() {
       try {
@@ -73,8 +84,8 @@ export default function EventsSection() {
                 {event.title}
               </h3>
               <div className="text-sm text-gray-600 space-y-1">
-                <p>📅 {event.startDate} ~ {event.endDate}</p>
-                <p>�� {event.location}</p>
+                <p>📅 {formatDate(event.startDate)} ~ {formatDate(event.endDate)}</p>
+                <p>📍 {event.location || '위치 정보 없음'}</p>
                 {event.description && (
                   <p className="text-gray-500 line-clamp-2">{event.description}</p>
                 )}
