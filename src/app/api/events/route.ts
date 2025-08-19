@@ -7,8 +7,16 @@ interface EventItem {
   eventenddate?: string;
   addr1?: string;
   overview?: string;
+  eventintro?: string;
+  eventdesc?: string;
+  content?: string;
+  description?: string;
   firstimage?: string;
   firstimage2?: string;
+  secondimage?: string;
+  secondimage2?: string;
+  thirdimage?: string;
+  thirdimage2?: string;
 }
 
 interface ApiResponse {
@@ -51,7 +59,7 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
     const eventStartDate = `${year}${month}01`; // 이번 달 1일
     const eventEndDate = `${year}${month}${day}`; // 오늘
     
-    const url = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
+    const url = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&areaCode=${areaCode}&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
     
     console.log('공공데이터 API 호출:', url);
     
@@ -66,14 +74,25 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
     console.log('API 응답 데이터:', data);
     
     if (data.response?.body?.items?.item) {
-      const events = data.response.body.items.item.map((item: EventItem) => ({
-        title: item.title || '제목 없음',
-        startDate: item.eventstartdate || '',
-        endDate: item.eventenddate || '',
-        location: item.addr1 || '위치 정보 없음',
-        description: item.overview || '설명 없음',
-        imageUrl: item.firstimage || item.firstimage2,
-      }));
+      const events = data.response.body.items.item.map((item: EventItem) => {
+        // 각 아이템의 원본 데이터 로깅
+        console.log('원본 행사 데이터:', {
+          title: item.title,
+          overview: item.overview,
+          addr1: item.addr1,
+          eventstartdate: item.eventstartdate,
+          eventenddate: item.eventenddate
+        });
+        
+        return {
+          title: item.title || '제목 없음',
+          startDate: item.eventstartdate || '',
+          endDate: item.eventenddate || '',
+          location: item.addr1 || '위치 정보 없음',
+          description: item.overview || '설명 없음',
+          imageUrl: item.firstimage || item.firstimage2,
+        };
+      });
       
       console.log('변환된 행사 개수:', events.length);
       return Response.json(events);
@@ -99,6 +118,7 @@ function getAreaCode(region: string): string {
     'gyeonggi': '31',
     'chungbuk': '33',
     'chungnam': '34',
+    'jeonbuk': '37',  // 추가
     'jeonnam': '38',
     'gyeongbuk': '35',
     'gyeongnam': '36',

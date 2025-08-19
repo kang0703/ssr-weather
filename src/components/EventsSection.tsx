@@ -3,10 +3,16 @@
 import { useState, useEffect } from 'react';
 import { EventData } from '@/lib/events';
 
-export default function EventsSection() {
+interface EventsSectionProps {
+  region?: string;
+  cityName?: string;
+}
+
+export default function EventsSection({ region = 'seoul', cityName = '서울' }: EventsSectionProps) {
   const [events, setEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false); // 모든 행사 표시 여부
 
   // 날짜 형식을 읽기 쉽게 변환하는 함수
   const formatDate = (dateString: string): string => {
@@ -23,8 +29,8 @@ export default function EventsSection() {
     async function fetchEvents() {
       try {
         setLoading(true);
-        // API 라우트를 통해 행사 정보 가져오기
-        const response = await fetch('/api/events?region=seoul');
+        // API 라우트를 통해 행사 정보 가져오기 (지역 정보 전달)
+        const response = await fetch(`/api/events?region=${region}`);
         if (response.ok) {
           const eventsData = await response.json();
           setEvents(eventsData as EventData[]);
@@ -41,7 +47,7 @@ export default function EventsSection() {
     }
 
     fetchEvents();
-  }, []);
+  }, [region]); // region이 변경될 때마다 다시 호출
 
   if (loading) {
     return (
@@ -68,38 +74,67 @@ export default function EventsSection() {
     );
   }
 
+  const handleShowMore = () => {
+    setShowAll(true);
+  };
+
+  const handleShowLess = () => {
+    setShowAll(false);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">주요 행사/축제</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        {cityName.replace('특별시', '').replace('광역시', '').replace('도', '')} 주요 행사/축제
+      </h2>
       
       {events.length === 0 ? (
         <div className="text-center text-gray-500 py-8">
           <p>현재 진행 중인 행사가 없습니다.</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {events.slice(0, 5).map((event, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-              <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
-                {event.title}
-              </h3>
-              <div className="text-sm text-gray-600 space-y-1">
-                <p>📅 {formatDate(event.startDate)} ~ {formatDate(event.endDate)}</p>
-                <p>📍 {event.location || '위치 정보 없음'}</p>
-                {event.description && (
-                  <p className="text-gray-500 line-clamp-2">{event.description}</p>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {events.slice(0, showAll ? events.length : 6).map((event, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                {event.imageUrl && (
+                  <div className="mb-3">
+                    <img 
+                      src={event.imageUrl} 
+                      alt={event.title}
+                      className="w-full h-32 object-cover rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 )}
+                <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-sm">
+                  {event.title}
+                </h3>
+                <div className="text-xs text-gray-600 space-y-1">
+                  <p>📅 {formatDate(event.startDate)} ~ {formatDate(event.endDate)}</p>
+                  <p>📍 {event.location || '위치 정보 없음'}</p>
+                  {event.description && event.description !== '설명 없음' && event.description.trim() !== '' && (
+                    <p className="text-gray-500 line-clamp-2">{event.description}</p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+          
+          <div className="mt-6 text-center">
+            {events.length > 6 && (
+              <button 
+                onClick={showAll ? handleShowLess : handleShowMore}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium cursor-pointer px-4 py-2 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+              >
+                {showAll ? '간단히 보기' : `더 많은 행사 보기 (${events.length - 6}개 더)`}
+              </button>
+            )}
+          </div>
+        </>
       )}
-      
-      <div className="mt-6 text-center">
-        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-          더 많은 행사 보기 →
-        </button>
-      </div>
     </div>
   );
 }

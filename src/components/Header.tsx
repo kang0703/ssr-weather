@@ -29,7 +29,7 @@ export default function Header() {
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center cursor-pointer">
             <h1 className="text-xl font-bold text-gray-900">
               갈래말래 날씨여행
             </h1>
@@ -38,7 +38,7 @@ export default function Header() {
           {/* 햄버거 메뉴 버튼 */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 cursor-pointer"
           >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -48,7 +48,7 @@ export default function Header() {
           {/* 데스크톱 메뉴 */}
           <nav className="hidden md:flex space-x-8">
             <div className="relative group">
-              <button className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              <button className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
                 지역별 날씨
               </button>
               <div className="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -57,7 +57,7 @@ export default function Header() {
                     <Link
                       key={region.path}
                       href={region.path}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                     >
                       {region.name}
                     </Link>
@@ -77,7 +77,7 @@ export default function Header() {
                   <Link
                     key={region.path}
                     href={region.path}
-                    className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
+                    className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {region.name}

@@ -24,3 +24,19 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 버튼과 링크에 커서 포인터 적용 */
+button,
+a,
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+  cursor: pointer;
+}
+
+/* 클릭 가능한 요소에 호버 효과 추가 */
+button:hover,
+a:hover,
+[role="button"]:hover {
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+}
