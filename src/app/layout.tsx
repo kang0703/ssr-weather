@@ -12,6 +12,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "갈래말래 날씨여행 - 날씨와 행사 정보",
   description: "날씨와 함께하는 행사/축제 정보를 제공하는 웹사이트입니다.",
+  icons: {
+    icon: '/favicon.png',        // PNG 파비콘
+    shortcut: '/favicon.png',    // 단축 아이콘
+    apple: '/apple-favicon.png', // Apple 기기용
+  },
 };
 
 export default function RootLayout({
