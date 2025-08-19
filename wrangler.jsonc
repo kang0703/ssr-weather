@@ -24,5 +24,9 @@
       "pattern": "www.weathertour.org/*",
       "zone_name": "weathertour.org"
     }
-  ]
+  ],
+  "minify": true,
+  "vars": {
+    "FORCE_HTTPS": "true"
+  }
 }
