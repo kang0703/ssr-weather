@@ -3,23 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { EventData } from '@/lib/events';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: "전국 행사 & 축제 - 갈래말래 날씨여행",
-  description: "전국 곳곳의 다양한 행사와 축제를 한눈에 확인하세요. 날씨와 함께하는 행사 정보를 제공합니다.",
-  keywords: "행사, 축제, 전국 행사, 지역 축제, 이벤트, 갈래말래",
-  openGraph: {
-    title: "전국 행사 & 축제 - 갈래말래 날씨여행",
-    description: "전국 곳곳의 다양한 행사와 축제를 한눈에 확인하세요.",
-    type: "website",
-    locale: "ko_KR",
-    url: "https://www.weathertour.org/events",
-  },
-  alternates: {
-    canonical: "https://www.weathertour.org/events",
-  },
-};
 
 export default function AllEventsPage() {
   const [events, setEvents] = useState<EventData[]>([]);
