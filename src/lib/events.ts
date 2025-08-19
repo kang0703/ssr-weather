@@ -243,7 +243,7 @@ export async function getEventDetail(
       sigunguCode: detailItem.sigungucode || '',
       
       // 이미지 정보
-      images: imageItems.map((img: any) => img.originimgurl || img.smallimageurl).filter(Boolean),
+      images: imageItems.map((img: any) => forceHttps(img.originimgurl || img.smallimageurl)).filter(Boolean),
     };
     
     console.log('최종 결과:', result);
