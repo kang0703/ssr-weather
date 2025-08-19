@@ -281,19 +281,29 @@ export default function EventDetail({ eventId }: EventDetailProps) {
                 </div>
                 <div className="ml-4 flex space-x-2">
                   <button
-                    onClick={() => window.open(`tel:${event.tel}`)}
-                    className="inline-flex items-center px-3 py-1.5 bg-purple-100 text-purple-700 text-xs font-medium rounded-lg hover:bg-purple-200 transition-colors"
-                  >
-                    📞 전화
-                  </button>
-                  <button
                     onClick={() => {
-                      navigator.clipboard.writeText(event.tel);
-                      alert('전화번호가 복사되었습니다!');
+                      if (event.tel && event.tel.trim() !== '') {
+                        navigator.clipboard.writeText(event.tel);
+                        alert('전화번호가 복사되었습니다!');
+                      } else {
+                        alert('전화번호 정보가 없습니다.');
+                      }
                     }}
                     className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     📋 복사
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (event.tel && event.tel.trim() !== '') {
+                        window.open(`tel:${event.tel}`);
+                      } else {
+                        alert('전화번호 정보가 없습니다.');
+                      }
+                    }}
+                    className="inline-flex items-center px-3 py-1.5 bg-purple-100 text-purple-700 text-xs font-medium rounded-lg hover:bg-purple-200 transition-colors"
+                  >
+                    📞 전화
                   </button>
                 </div>
               </div>
@@ -313,7 +323,13 @@ export default function EventDetail({ eventId }: EventDetailProps) {
                 </div>
                 <div className="ml-4">
                   <button
-                    onClick={() => window.open(event.homepage, '_blank')}
+                    onClick={() => {
+                      if (event.homepage && event.homepage.trim() !== '') {
+                        window.open(event.homepage, '_blank');
+                      } else {
+                        alert('홈페이지 정보가 없습니다.');
+                      }
+                    }}
                     className="inline-flex items-center px-3 py-1.5 bg-cyan-100 text-cyan-700 text-xs font-medium rounded-lg hover:bg-cyan-200 transition-colors"
                   >
                     🔗 방문
@@ -708,7 +724,13 @@ export default function EventDetail({ eventId }: EventDetailProps) {
             </button>
             {event.homepage && (
               <button
-                onClick={() => window.open(event.homepage, '_blank')}
+                onClick={() => {
+                  if (event.homepage && event.homepage.trim() !== '') {
+                    window.open(event.homepage, '_blank');
+                  } else {
+                    alert('홈페이지 정보가 없습니다.');
+                  }
+                }}
                 className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
               >
                 홈페이지 방문
