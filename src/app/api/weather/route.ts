@@ -7,12 +7,6 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
   const lon = searchParams.get('lon');
   const type = searchParams.get('type');
 
-  console.log('Weather API 호출됨:', { lat, lon, type });
-  console.log('환경변수 확인:', { 
-    hasEnv: !!context?.env, 
-    hasApiKey: !!context?.env?.OPENWEATHER_API_KEY 
-  });
-
   if (!lat || !lon) {
     return Response.json({ error: '위도와 경도가 필요합니다.' }, { status: 400 });
   }
@@ -26,7 +20,6 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
       return Response.json(weather);
     }
   } catch (error) {
-    console.error('날씨 API 오류:', error);
     return Response.json({ error: '날씨 정보를 가져오는데 실패했습니다.' }, { status: 500 });
   }
 }
