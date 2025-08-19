@@ -223,14 +223,53 @@ export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2
  * 지역 코드를 한글 이름으로 변환합니다.
  */
 export function getRegionName(region: string): string {
-  const city = KOREAN_CITIES.find(c => c.region === region);
-  return city ? city.name : '알 수 없는 지역';
+  // 지역별 대표 이름 매핑
+  const regionNameMapping: { [key: string]: string } = {
+    'seoul': '서울특별시',
+    'busan': '부산광역시',
+    'daegu': '대구광역시',
+    'incheon': '인천광역시',
+    'gwangju': '광주광역시',
+    'daejeon': '대전광역시',
+    'ulsan': '울산광역시',
+    'sejong': '세종시',
+    'gyeonggi': '경기도',
+    'chungbuk': '충청북도',
+    'chungnam': '충청남도',
+    'jeonbuk': '전라북도',
+    'jeonnam': '전라남도',
+    'gyeongbuk': '경상북도',
+    'gyeongnam': '경상남도',
+    'gangwon': '강원도',
+    'jeju': '제주도'
+  };
+  
+  return regionNameMapping[region] || '알 수 없는 지역';
 }
 
 /**
- * 지역 코드를 좌표로 변환합니다.
+ * 지역별 대표 좌표를 반환합니다 (해당 지역의 주요 도시들의 평균 좌표).
  */
-export function getRegionCoordinates(region: string): { lat: number; lon: number } | null {
-  const city = KOREAN_CITIES.find(c => c.region === region);
-  return city ? { lat: city.lat, lon: city.lon } : null;
+export function getRegionRepresentativeCoordinates(region: string): { lat: number; lon: number } | null {
+  const citiesInRegion = KOREAN_CITIES.filter(city => city.region === region);
+  
+  if (citiesInRegion.length === 0) {
+    return null;
+  }
+  
+  // 해당 지역의 모든 도시 좌표의 평균 계산
+  const totalLat = citiesInRegion.reduce((sum, city) => sum + city.lat, 0);
+  const totalLon = citiesInRegion.reduce((sum, city) => sum + city.lon, 0);
+  
+  return {
+    lat: totalLat / citiesInRegion.length,
+    lon: totalLon / citiesInRegion.length
+  };
+}
+
+/**
+ * 지역별 주요 도시들을 반환합니다.
+ */
+export function getRegionCities(region: string): CityInfo[] {
+  return KOREAN_CITIES.filter(city => city.region === region);
 }

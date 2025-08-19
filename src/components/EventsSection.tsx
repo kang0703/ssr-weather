@@ -12,7 +12,7 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
   const [events, setEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState(false); // 모든 행사 표시 여부
+  const [showAll, setShowAll] = useState(false);
 
   // 날짜 형식을 읽기 쉽게 변환하는 함수
   const formatDate = (dateString: string): string => {
@@ -25,11 +25,31 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
     return `${year}.${month}.${day}`;
   };
 
+  // 도 단위 지역명만 추출하는 함수
+  const getRegionOnlyName = (cityName: string): string => {
+    // "경기도 구리시" → "경기도"
+    // "충청남도 천안시" → "충청남도"
+    // "서울특별시" → "서울특별시"
+    
+    if (cityName.includes('특별시') || cityName.includes('광역시') || cityName === '세종시') {
+      return cityName;
+    }
+    
+    // "도"가 포함된 경우 도 단위까지만 추출
+    if (cityName.includes('도')) {
+      const parts = cityName.split(' ');
+      if (parts.length >= 2 && parts[0].includes('도')) {
+        return parts[0]; // "경기도", "충청북도" 등
+      }
+    }
+    
+    return cityName;
+  };
+
   useEffect(() => {
     async function fetchEvents() {
       try {
         setLoading(true);
-        // API 라우트를 통해 행사 정보 가져오기 (지역 정보 전달)
         const response = await fetch(`/api/events?region=${region}`);
         if (response.ok) {
           const eventsData = await response.json();
@@ -47,7 +67,7 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
     }
 
     fetchEvents();
-  }, [region]); // region이 변경될 때마다 다시 호출
+  }, [region]);
 
   if (loading) {
     return (
@@ -85,7 +105,7 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">
-        {cityName.replace('특별시', '').replace('광역시', '').replace('도', '')} 주요 행사/축제
+        {getRegionOnlyName(cityName)} 주요 행사/축제
       </h2>
       
       {events.length === 0 ? (

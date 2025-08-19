@@ -455,7 +455,7 @@ export default function LocationBasedWeather() {
       {location && (
         <EventsSection 
           region={getRegionFromCityName(location.nearestCityName)}
-          cityName={location.nearestCityName}
+          cityName={getHierarchicalLocationName(location.nearestCityName)}
         />
       )}
     </div>

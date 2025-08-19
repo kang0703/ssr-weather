@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { WeatherData, ForecastData } from '@/lib/weather';
-import { getRegionCoordinates } from '@/lib/location';
+import { getRegionRepresentativeCoordinates, getRegionCities } from '@/lib/location';
 import EventsSection from './EventsSection';
 import WeatherIcon from './WeatherIcon';
 
@@ -26,13 +26,16 @@ export default function RegionWeather({ region, regionName }: RegionWeatherProps
       setLoading(true);
       setError(null);
 
-      const coordinates = getRegionCoordinates(region);
+      // 지역별 대표 좌표 사용
+      const coordinates = getRegionRepresentativeCoordinates(region);
       if (!coordinates) {
         throw new Error('지역 좌표를 찾을 수 없습니다.');
       }
 
       const { lat, lon } = coordinates;
-      console.log(`${regionName} 날씨 데이터 요청:`, { lat, lon });
+      
+      // 콘솔 로그에서 regionName 사용 (representativeCity 대신)
+      console.log(`${regionName} 날씨 데이터 요청 (대표 좌표):`, { lat, lon, region: regionName });
 
       // API 라우트를 통해 데이터 가져오기
       const [weatherRes, forecastRes] = await Promise.all([
