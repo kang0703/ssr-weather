@@ -247,28 +247,13 @@ export default function LocationBasedWeather() {
       setError(null);
       setPermissionDenied(false);
 
-      // 브라우저의 Geolocation API를 사용하여 현재 위치 가져오기
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude: lat, longitude: lon } = position.coords;
             
-            console.log('현재 위치 좌표:', { lat, lon });
-            
-            // 가장 가까운 한국 도시 찾기 (디버깅 로그 추가)
             const nearestCity = findNearestKoreanCity(lat, lon);
-            console.log('가장 가까운 도시:', nearestCity);
             
-            // 모든 도시와의 거리 계산 (디버깅용)
-            const distances = KOREAN_CITIES.map(city => ({
-              name: city.name,
-              region: city.region,
-              distance: calculateDistance(lat, lon, city.lat, city.lon)
-            })).sort((a, b) => a.distance - b.distance);
-            
-            console.log('가장 가까운 상위 5개 도시:', distances.slice(0, 5));
-            
-            // 기본값으로 현재 위치 설정
             const locationData: LocationData = {
               lat,
               lon,
@@ -277,14 +262,12 @@ export default function LocationBasedWeather() {
             };
             setLocation(locationData);
 
-            // 날씨 데이터 가져오기
             await fetchWeatherData(lat, lon);
           },
           (positionError) => {
             console.warn('위치 정보를 가져올 수 없음:', positionError);
             
             if (positionError.code === 1) {
-              // 사용자가 위치 접근을 거부한 경우
               setPermissionDenied(true);
               setError('위치 접근이 거부되었습니다. 위치 권한을 허용해주세요.');
             } else if (positionError.code === 2) {
@@ -299,11 +282,10 @@ export default function LocationBasedWeather() {
           {
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 300000 // 5분
+            maximumAge: 300000
           }
         );
       } else {
-        // Geolocation API를 지원하지 않는 경우
         setError('이 브라우저는 위치 정보를 지원하지 않습니다.');
         setLoading(false);
       }
@@ -316,21 +298,14 @@ export default function LocationBasedWeather() {
 
   const fetchWeatherData = async (lat: number, lon: number) => {
     try {
-      console.log('날씨 데이터 요청:', { lat, lon });
-
-      // API 라우트를 통해 데이터 가져오기
       const [weatherRes, forecastRes] = await Promise.all([
         fetch(`/api/weather?lat=${lat}&lon=${lon}&type=current`),
         fetch(`/api/weather?lat=${lat}&lon=${lon}&type=forecast`)
       ]);
 
-      console.log('날씨 API 응답 상태:', { weather: weatherRes.status, forecast: forecastRes.status });
-
       if (weatherRes.ok && forecastRes.ok) {
         const weatherData = await weatherRes.json();
         const forecastData = await forecastRes.json();
-        
-        console.log('날씨 데이터 받음:', { weather: weatherData, forecast: forecastData });
         
         setWeather(weatherData as WeatherData);
         setForecast(forecastData as ForecastData[]);

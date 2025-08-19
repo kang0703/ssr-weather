@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // API 응답 타입 정의
 interface EventItem {
@@ -9,7 +9,7 @@ interface EventItem {
   overview?: string;
   eventintro?: string;
   eventdesc?: string;
-  content?: string;
+  eventcontent?: string;
   description?: string;
   firstimage?: string;
   firstimage2?: string;
@@ -17,6 +17,12 @@ interface EventItem {
   secondimage2?: string;
   thirdimage?: string;
   thirdimage2?: string;
+  contentid?: string;
+  tel?: string;
+  homepage?: string;
+  cat1?: string;
+  cat2?: string;
+  cat3?: string;
 }
 
 interface ApiResponse {
@@ -30,60 +36,46 @@ interface ApiResponse {
 }
 
 export async function GET(request: NextRequest, { params }: { params: any }, context?: { env: CloudflareEnv }) {
-  const { searchParams } = new URL(request.url);
-  const region = searchParams.get('region') || 'seoul';
-
-  console.log('Events API 호출됨:', { region });
-  console.log('환경변수 확인:', { 
-    hasEnv: !!context?.env, 
-    hasApiKey: !!context?.env?.PUBLIC_DATA_API_KEY 
-  });
-
   try {
-    // 환경별로 API 키 가져오기
     const apiKey = context?.env?.PUBLIC_DATA_API_KEY || process.env.PUBLIC_DATA_API_KEY;
     if (!apiKey) {
       throw new Error('공공데이터 API 키가 설정되지 않았습니다.');
     }
 
     const baseUrl = 'https://apis.data.go.kr/B551011/KorService2';
-    const areaCode = getAreaCode(region);
     
-    // searchFestival1 → searchFestival2로 변경
-    // 날짜 파라미터 추가
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const day = String(currentDate.getDate()).padStart(2, '0');
     
-    const eventStartDate = `${year}${month}01`; // 이번 달 1일
-    const eventEndDate = `${year}${month}${day}`; // 오늘
+    const eventStartDate = `${year}${month}01`;
+    const eventEndDate = `${year}${month}${day}`;
     
-    const url = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=20&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&areaCode=${areaCode}&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
+    // A02 카테고리 (인문/문화/예술/역사)만 조회
+    const allEvents = [];
     
-    console.log('공공데이터 API 호출:', url);
-    
-    const response = await fetch(url);
-    console.log('API 응답 상태:', response.status);
-    
-    if (!response.ok) {
-      throw new Error(`API 응답 실패: ${response.status}`);
+    // 축제/행사 (searchFestival2) - A02 카테고리
+    try {
+      const festivalUrl = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
+      const festivalRes = await fetch(festivalUrl);
+      if (festivalRes.ok) {
+        const festivalData = await festivalRes.json();
+        if (festivalData.response?.body?.items?.item) {
+          allEvents.push(...festivalData.response.body.items.item);
+        }
+      }
+    } catch (error) {
+      console.warn('축제/행사 조회 실패:', error);
     }
     
-    const data = await response.json() as ApiResponse;
-    console.log('API 응답 데이터:', data);
+    // 중복 제거 및 데이터 변환
+    const uniqueEvents = allEvents.filter((event, index, self) => 
+      index === self.findIndex(e => e.contentid === event.contentid)
+    );
     
-    if (data.response?.body?.items?.item) {
-      const events = data.response.body.items.item.map((item: EventItem) => {
-        // 각 아이템의 원본 데이터 로깅
-        console.log('원본 행사 데이터:', {
-          title: item.title,
-          overview: item.overview,
-          addr1: item.addr1,
-          eventstartdate: item.eventstartdate,
-          eventenddate: item.eventenddate
-        });
-        
+    if (uniqueEvents.length > 0) {
+      const events = uniqueEvents.map((item: EventItem) => {
         return {
           title: item.title || '제목 없음',
           startDate: item.eventstartdate || '',
@@ -91,40 +83,25 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
           location: item.addr1 || '위치 정보 없음',
           description: item.overview || '설명 없음',
           imageUrl: item.firstimage || item.firstimage2,
+          contentId: item.contentid || '',
+          tel: item.tel || '',
+          homepage: item.homepage || '',
+          category: item.cat1 || '기타',
+          cat1: item.cat1 || '',
+          cat2: item.cat2 || '',
+          cat3: item.cat3 || '',
         };
       });
       
-      console.log('변환된 행사 개수:', events.length);
-      return Response.json(events);
+      return Response.json({ success: true, events });
     }
     
-    return Response.json([]);
+    return Response.json({ success: true, events: [] });
   } catch (error) {
     console.error('행사 API 오류:', error);
-    return Response.json({ error: '행사 정보를 가져오는데 실패했습니다.' }, { status: 500 });
+    return Response.json(
+      { success: false, error: '행사 정보를 가져오는데 실패했습니다.' },
+      { status: 500 }
+    );
   }
-}
-
-function getAreaCode(region: string): string {
-  const areaCodes: { [key: string]: string } = {
-    'seoul': '1',
-    'busan': '6',
-    'daegu': '4',
-    'incheon': '2',
-    'gwangju': '5',
-    'daejeon': '3',
-    'ulsan': '7',
-    'sejong': '8',
-    'gyeonggi': '31',
-    'chungbuk': '33',
-    'chungnam': '34',
-    'jeonbuk': '37',  // 추가
-    'jeonnam': '38',
-    'gyeongbuk': '35',
-    'gyeongnam': '36',
-    'gangwon': '32',
-    'jeju': '39',
-  };
-  
-  return areaCodes[region] || '1';
 }
