@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "패치노트 - 갈래말래 날씨여행",
-  description: "갈래말래 날씨여행의 업데이트 내역과 새로운 기능들을 확인하세요.",
+  title: "업데이트 소식 - 갈래말래 날씨여행",
+  description: "갈래말래 날씨여행의 최신 업데이트 소식과 개선사항을 확인하세요.",
+  keywords: "업데이트, 패치노트, 개선사항, 새로운 기능, 갈래말래",
+  alternates: {
+    canonical: "https://www.weathertour.org/patch-notes",
+  },
 };
 
 export default function PatchNotesPage() {

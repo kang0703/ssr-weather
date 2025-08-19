@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# 사이트맵
+Sitemap: https://www.weathertour.org/sitemap.xml
+
+# 크롤링 지연
+Crawl-delay: 1
+
+# 애드센스 관련
+User-agent: Mediapartners-Google
+Allow: /
+
+# 특정 파일 제외
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
