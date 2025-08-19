@@ -205,7 +205,7 @@ export async function getEventDetail(
       endDate: detailItem.eventenddate || '',
       location: detailItem.addr1 || '위치 정보 없음',
       description: detailItem.overview || '설명 없음',
-      imageUrl: detailItem.firstimage || detailItem.firstimage2,
+      imageUrl: forceHttps(detailItem.firstimage || detailItem.firstimage2),
       contentId: detailItem.contentid,
       tel: detailItem.tel || '',
       homepage: detailItem.homepage || '',
@@ -306,7 +306,7 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
         endDate: item.eventenddate || '',
         location: item.addr1 || '위치 정보 없음',
         description: item.overview || '설명 없음',
-        imageUrl: item.firstimage || item.firstimage2,
+        imageUrl: forceHttps(item.firstimage || item.firstimage2),
         contentId: item.contentid,
         tel: item.tel || '',
         homepage: item.homepage || '',
@@ -452,4 +452,12 @@ function getCategoryName(catCode: string): string {
   };
   
   return categoryMap[catCode] || catCode;
+}
+
+// 이미지 URL을 HTTPS로 강제 변환하는 함수 추가
+function forceHttps(url: string): string {
+  if (url && url.startsWith('http://')) {
+    return url.replace('http://', 'https://');
+  }
+  return url;
 }
