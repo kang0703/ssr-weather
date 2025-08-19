@@ -15,136 +15,98 @@ export default function BusinessPage() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12 mb-12">
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">협력 분야</h2>
-          <div className="space-y-6">
-            <div className="border-l-4 border-blue-600 pl-4">
-              <h3 className="font-semibold text-gray-900 mb-2">데이터 파트너십</h3>
-              <p className="text-gray-600 text-sm">
+      <div className="mb-16">
+        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+          <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            협력 분야
+          </span>
+        </h2>
+        
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* 데이터 파트너십 */}
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-blue-200">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400 to-indigo-500 opacity-10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform duration-500"></div>
+            
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-300">
+                데이터 파트너십
+              </h3>
+              
+              <p className="text-gray-700 leading-relaxed">
                 날씨 데이터, 행사 정보, 지역 관광 정보 등을 공유하고 
-                상호 시너지를 창출할 수 있는 파트너십을 모색합니다.
-              </p>
-            </div>
-            
-            <div className="border-l-4 border-green-600 pl-4">
-              <h3 className="font-semibold text-gray-900 mb-2">기술 협력</h3>
-              <p className="text-gray-600 text-sm">
-                API 연동, 기술 공유, 개발 협력을 통한 
-                혁신적인 서비스 개발을 함께 진행합니다.
-              </p>
-            </div>
-            
-            <div className="border-l-4 border-purple-600 pl-4">
-              <h3 className="font-semibold text-gray-900 mb-2">마케팅 협력</h3>
-              <p className="text-gray-600 text-sm">
-                크로스 프로모션, 공동 마케팅 캠페인, 
-                브랜드 협력을 통한 시장 확장을 도모합니다.
+                <span className="font-semibold text-blue-600"> 상호 시너지</span>를 창출할 수 있는 
+                파트너십을 모색합니다.
               </p>
             </div>
           </div>
-        </div>
-        
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">문의 양식</h2>
-          <form className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                문의자 명 *
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="담당자명을 입력해주세요"
-              />
-            </div>
+
+          {/* 기술 협력 */}
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-50 to-emerald-100 p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-green-200">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400 to-emerald-500 opacity-10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform duration-500"></div>
             
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                문의자 이메일 *
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="이메일을 입력해주세요"
-              />
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-green-600 transition-colors duration-300">
+                기술 협력
+              </h3>
+              
+              <p className="text-gray-700 leading-relaxed">
+                API 연동, 기술 공유, 개발 협력을 통한 
+                <span className="font-semibold text-green-600"> 혁신적인 서비스</span> 개발을 
+                함께 진행합니다.
+              </p>
             </div>
+          </div>
+
+          {/* 마케팅 협력 */}
+          <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-pink-100 p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-purple-200">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400 to-pink-500 opacity-10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform duration-500"></div>
             
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                문의자 연락처
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="연락처를 입력해주세요"
-              />
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-purple-600 transition-colors duration-300">
+                마케팅 협력
+              </h3>
+              
+              <p className="text-gray-700 leading-relaxed">
+                크로스 프로모션, 공동 마케팅 캠페인, 
+                <span className="font-semibold text-purple-600"> 브랜드 협력</span>을 통한 
+                시장 확장을 도모합니다.
+              </p>
             </div>
-            
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                문의 내용 *
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={5}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="협력에 대한 구체적인 내용을 작성해주세요"
-              ></textarea>
-            </div>
-            
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              문의하기
-            </button>
-          </form>
+          </div>
         </div>
       </div>
 
-      <div className="bg-gray-50 rounded-lg p-8">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">기타 연락 방법</h2>
-        <div className="grid md:grid-cols-3 gap-6">
+      <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-8 text-center shadow-lg border border-gray-200">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">연락 방법</h2>
+        <div className="flex justify-center">
           <div className="text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="font-semibold text-gray-900 mb-1">이메일</h3>
-            <p className="text-sm text-gray-600">business@weather-travel.com</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-gray-900 mb-1">전화</h3>
-            <p className="text-sm text-gray-600">02-1234-5678</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </div>
-            <h3 className="font-semibold text-gray-900 mb-1">주소</h3>
-            <p className="text-sm text-gray-600">서울특별시 강남구</p>
+            <h3 className="font-semibold text-gray-900 mb-3 text-xl">이메일</h3>
+            <p className="text-lg text-gray-700 font-medium">kcmschool@naver.com</p>
+            <p className="text-sm text-gray-600 mt-2">비즈니스 협력 문의사항은 이메일로 연락주세요.</p>
           </div>
         </div>
       </div>
