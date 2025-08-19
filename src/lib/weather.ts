@@ -69,26 +69,20 @@ function translateWeatherDescription(description: string): string {
 export async function getCurrentWeather(lat: number, lon: number, env?: CloudflareEnv): Promise<WeatherData> {
   const apiKey = env?.OPENWEATHER_API_KEY || process.env.OPENWEATHER_API_KEY;
   
-  console.log('OpenWeather API 키 확인:', apiKey ? '설정됨' : '설정되지 않음');
-  
   if (!apiKey) {
     throw new Error('OpenWeather API 키가 설정되지 않았습니다.');
   }
   
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
   
-  console.log('OpenWeather API 호출:', url);
-  
   try {
     const response = await fetch(url);
-    console.log('OpenWeather API 응답 상태:', response.status);
     
     if (!response.ok) {
-      throw new Error('날씨 정보를 가져오는데 실패했습니다.');
+      throw new Error(`날씨 API 오류: ${response.status}`);
     }
     
     const data = await response.json() as any;
-    console.log('OpenWeather API 응답 데이터:', data);
     
     return {
       location: data.name,
@@ -100,7 +94,6 @@ export async function getCurrentWeather(lat: number, lon: number, env?: Cloudfla
       icon: data.weather[0].icon,
     };
   } catch (error) {
-    console.error('날씨 API 오류:', error);
     throw error;
   }
 }
@@ -108,26 +101,20 @@ export async function getCurrentWeather(lat: number, lon: number, env?: Cloudfla
 export async function getWeatherForecast(lat: number, lon: number, env?: CloudflareEnv): Promise<ForecastData[]> {
   const apiKey = env?.OPENWEATHER_API_KEY || process.env.OPENWEATHER_API_KEY;
   
-  console.log('OpenWeather Forecast API 키 확인:', apiKey ? '설정됨' : '설정되지 않음');
-  
   if (!apiKey) {
     throw new Error('OpenWeather API 키가 설정되지 않았습니다.');
   }
   
   const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=kr`;
   
-  console.log('OpenWeather Forecast API 호출:', url);
-  
   try {
     const response = await fetch(url);
-    console.log('OpenWeather Forecast API 응답 상태:', response.status);
     
     if (!response.ok) {
-      throw new Error('날씨 예보를 가져오는데 실패했습니다.');
+      throw new Error(`날씨 예보 API 오류: ${response.status}`);
     }
     
     const data = await response.json() as any;
-    console.log('OpenWeather Forecast API 응답 데이터:', data);
     
     // 5일 예보 데이터 처리 (하루에 한 번씩)
     const dailyForecasts = data.list.filter((item: any, index: number) => index % 8 === 0);
@@ -144,7 +131,6 @@ export async function getWeatherForecast(lat: number, lon: number, env?: Cloudfl
       icon: item.weather[0].icon,
     }));
   } catch (error) {
-    console.error('날씨 예보 API 오류:', error);
     throw error;
   }
 }
