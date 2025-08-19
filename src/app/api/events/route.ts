@@ -35,6 +35,24 @@ interface ApiResponse {
   };
 }
 
+// 타입 가드 함수
+function isApiResponse(data: unknown): data is ApiResponse {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'response' in data &&
+    typeof (data as any).response === 'object' &&
+    (data as any).response !== null &&
+    'body' in (data as any).response &&
+    typeof ((data as any).response as any).body === 'object' &&
+    ((data as any).response as any).body !== null &&
+    'items' in (((data as any).response as any).body as any) &&
+    typeof ((((data as any).response as any).body as any).items as any) === 'object' &&
+    ((((data as any).response as any).body as any).items as any) !== null &&
+    'item' in (((((data as any).response as any).body as any).items as any) as any)
+  );
+}
+
 export async function GET(request: NextRequest, { params }: { params: any }, context?: { env: CloudflareEnv }) {
   try {
     const apiKey = context?.env?.PUBLIC_DATA_API_KEY || process.env.PUBLIC_DATA_API_KEY;
@@ -53,7 +71,7 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
     const eventEndDate = `${year}${month}${day}`;
     
     // A02 카테고리 (인문/문화/예술/역사)만 조회
-    const allEvents = [];
+    const allEvents: EventItem[] = [];
     
     // 축제/행사 (searchFestival2) - A02 카테고리
     try {
@@ -61,7 +79,7 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
       const festivalRes = await fetch(festivalUrl);
       if (festivalRes.ok) {
         const festivalData = await festivalRes.json();
-        if (festivalData.response?.body?.items?.item) {
+        if (isApiResponse(festivalData) && festivalData.response?.body?.items?.item) {
           allEvents.push(...festivalData.response.body.items.item);
         }
       }
