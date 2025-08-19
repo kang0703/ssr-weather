@@ -81,14 +81,16 @@ export default function WeatherSection() {
       {forecast.length > 0 && (
         <div className="mt-6">
           <h3 className="text-xl font-semibold mb-3">5일 예보</h3>
-          <div className="grid grid-cols-5 gap-2">
-            {forecast.map((day, index) => (
-              <div key={index} className="text-center p-2 bg-gray-50 rounded">
-                <div className="text-sm font-medium">{day.date}</div>
-                <div className="text-lg font-bold text-blue-600">{day.temp_max}°</div>
-                <div className="text-sm text-gray-500">{day.temp_min}°</div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <div className="grid grid-cols-5 gap-2 min-w-[665px]">
+              {forecast.map((day, index) => (
+                <div key={index} className="text-center p-2 bg-gray-50 rounded">
+                  <div className="text-sm font-medium">{day.date}</div>
+                  <div className="text-lg font-bold text-blue-600">{day.temp_max}°</div>
+                  <div className="text-sm text-gray-500">{day.temp_min}°</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

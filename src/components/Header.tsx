@@ -25,6 +25,7 @@ const regions = [
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isRegionMenuOpen, setIsRegionMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b">
@@ -51,17 +52,28 @@ export default function Header() {
               전국 행사
             </a>
             
-            <div className="relative group">
-              <button className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer">
+            <div className="relative">
+              <button 
+                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer flex items-center gap-1"
+                onClick={() => setIsRegionMenuOpen(!isRegionMenuOpen)}
+                onMouseEnter={() => setIsRegionMenuOpen(true)}
+                onMouseLeave={() => setIsRegionMenuOpen(false)}
+              >
                 지역별 날씨
+                <svg className={`w-4 h-4 transition-transform ${isRegionMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className={`absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg transition-all duration-200 z-50 ${
+                isRegionMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+              }`}>
                 <div className="py-1 grid grid-cols-2 gap-1">
                   {regions.map((region) => (
                     <a 
                       key={region.path}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer" 
                       href={region.path}
+                      onClick={() => setIsRegionMenuOpen(false)}
                     >
                       {region.name}
                     </a>

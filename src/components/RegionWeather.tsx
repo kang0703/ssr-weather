@@ -150,24 +150,26 @@ export default function RegionWeather({ region, regionName }: RegionWeatherProps
           {forecast.length > 0 && (
             <div className="mt-6">
               <h3 className="text-xl font-semibold mb-3">5일 예보</h3>
-              <div className="grid grid-cols-5 gap-2">
-                {forecast.map((day, index) => (
-                  <div key={index} className="text-center p-2 bg-gray-50 rounded">
-                    <div className="text-sm font-medium">{day.date}</div>
-                    <WeatherIcon icon={day.icon} size={32} className="mx-auto my-1 flex items-center justify-center" />
-                    <div className="text-xs text-gray-600 mb-2">{day.description}</div>
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs text-red-500 font-medium">최고</span>
-                        <div className="text-lg font-bold text-red-600">{day.temp_max}°</div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs text-blue-500 font-medium">최저</span>
-                        <div className="text-sm text-blue-600">{day.temp_min}°</div>
+              <div className="overflow-x-auto">
+                <div className="grid grid-cols-5 gap-2 min-w-[665px]">
+                  {forecast.map((day, index) => (
+                    <div key={index} className="text-center p-2 bg-gray-50 rounded">
+                      <div className="text-sm font-medium">{day.date}</div>
+                      <WeatherIcon icon={day.icon} size={32} className="mx-auto my-1 flex items-center justify-center" />
+                      <div className="text-xs text-gray-600 mb-2">{day.description}</div>
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-red-500 font-medium">최고</span>
+                          <div className="text-lg font-bold text-red-600">{day.temp_max}°</div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-blue-500 font-medium">최저</span>
+                          <div className="text-sm text-blue-600">{day.temp_min}°</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}

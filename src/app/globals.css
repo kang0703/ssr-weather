@@ -40,3 +40,47 @@ a:hover,
   opacity: 0.8;
   transition: opacity 0.2s ease-in-out;
 }
+
+/* Container 클래스 오버라이드 - 부드러운 반응형 동작 */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* 작은 화면 (모바일) */
+@media (min-width: 640px) {
+  .container {
+    max-width: 700px;
+  }
+}
+
+/* 중간 화면 (태블릿) */
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+/* 큰 화면 (데스크톱) */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+/* 매우 큰 화면 */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* 초대형 화면 */
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}
