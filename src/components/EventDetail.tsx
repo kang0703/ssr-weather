@@ -99,13 +99,10 @@ export default function EventDetail({ eventId }: EventDetailProps) {
         
         if (isContentId) {
           // 숫자인 경우 contentId로 간주하지만, API 호출하지 않고 세션스토리지에서 바로 가져오기
-          console.log('contentId 확인됨, 세션스토리지에서 데이터 가져오기:', eventId);
-          
           const storedEvent = sessionStorage.getItem(`event_${eventId}`);
           
           if (storedEvent) {
             const eventData = JSON.parse(storedEvent);
-            console.log('세션스토리지 데이터:', eventData);
             setEvent(eventData);
           } else {
             // 세션스토리지에 없으면 에러 처리
@@ -113,12 +110,10 @@ export default function EventDetail({ eventId }: EventDetailProps) {
           }
         } else {
           // 숫자가 아닌 경우 해시 ID로 간주하여 세션스토리지에서 데이터 가져오기
-          console.log('해시 ID로 세션스토리지에서 데이터 가져오기:', eventId);
           const storedEvent = sessionStorage.getItem(`event_${eventId}`);
           
           if (storedEvent) {
             const eventData = JSON.parse(storedEvent);
-            console.log('세션스토리지 데이터:', eventData);
             setEvent(eventData);
           } else {
             throw new Error('세션스토리지에서 행사 정보를 찾을 수 없습니다.');
@@ -127,7 +122,6 @@ export default function EventDetail({ eventId }: EventDetailProps) {
         
         setError(null);
       } catch (err) {
-        console.error('행사 상세 정보 가져오기 실패:', err);
         setError('행사 정보를 가져오는데 실패했습니다.');
       } finally {
         setLoading(false);
