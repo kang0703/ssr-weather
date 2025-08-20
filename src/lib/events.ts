@@ -454,10 +454,24 @@ function getCategoryName(catCode: string): string {
   return categoryMap[catCode] || catCode;
 }
 
-// 이미지 URL을 HTTPS로 강제 변환하는 함수 추가
+// 이미지 URL을 HTTPS로 강제 변환하는 함수 개선
 function forceHttps(url: string): string {
-  if (url && url.startsWith('http://')) {
+  if (!url) return '';
+  
+  // HTTP URL을 HTTPS로 변환
+  if (url.startsWith('http://')) {
     return url.replace('http://', 'https://');
   }
+  
+  // 프로토콜이 없는 경우 HTTPS 추가
+  if (url.startsWith('//')) {
+    return `https:${url}`;
+  }
+  
+  // 상대 경로인 경우 기본 URL과 결합
+  if (url.startsWith('/')) {
+    return `https://tong.visitkorea.or.kr${url}`;
+  }
+  
   return url;
 }
