@@ -36,7 +36,7 @@ export default function Footer() {
         
         <div className="mt-8 pt-8 border-t border-gray-200">
           <p className="text-center text-sm text-gray-500">
-            © 2024 갈래말래 날씨여행. All rights reserved.
+            © 2025 갈래말래 날씨여행. All rights reserved.
           </p>
         </div>
       </div>
