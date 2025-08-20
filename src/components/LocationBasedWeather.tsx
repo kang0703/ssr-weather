@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { WeatherData, ForecastData } from '@/lib/weather';
-import { findNearestKoreanCity, KOREAN_CITIES, calculateDistance } from '@/lib/location';
+import { findNearestKoreanCity, KOREAN_CITIES } from '@/lib/location';
 import EventsSection from './EventsSection';
 import WeatherIcon from './WeatherIcon';
 
@@ -11,6 +11,7 @@ interface LocationData {
   lon: number;
   cityName: string;
   nearestCityName: string;
+  isCurrentLocation: boolean;
 }
 
 export default function LocationBasedWeather() {
@@ -241,58 +242,79 @@ export default function LocationBasedWeather() {
     return regionMapping[cityName] || cityName;
   };
 
+  // 기본 위치로 시작 (서울)
+  const getDefaultLocation = (): LocationData => ({
+    lat: 37.5665,
+    lon: 126.9780,
+    cityName: '서울특별시',
+    nearestCityName: '서울특별시',
+    isCurrentLocation: false
+  });
+
+  // 위치 권한 상태 확인
+  const checkLocationPermission = async (): Promise<boolean> => {
+    if (!('permissions' in navigator)) return false;
+    
+    try {
+      const permission = await navigator.permissions.query({ name: 'geolocation' });
+      return permission.state === 'granted';
+    } catch {
+      return false;
+    }
+  };
+
   const getCurrentLocation = async () => {
     try {
-      setLoading(true);
-      setError(null);
-      setPermissionDenied(false);
-
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude: lat, longitude: lon } = position.coords;
-            
             const nearestCity = findNearestKoreanCity(lat, lon);
             
             const locationData: LocationData = {
               lat,
               lon,
               cityName: '현재 위치',
-              nearestCityName: nearestCity.name
+              nearestCityName: nearestCity.name,
+              isCurrentLocation: true
             };
             setLocation(locationData);
-
             await fetchWeatherData(lat, lon);
           },
           (positionError) => {
             console.warn('위치 정보를 가져올 수 없음:', positionError);
-            
+            // 위치 권한 거부 시 기본 위치 사용
             if (positionError.code === 1) {
               setPermissionDenied(true);
-              setError('위치 접근이 거부되었습니다. 위치 권한을 허용해주세요.');
-            } else if (positionError.code === 2) {
-              setError('위치를 찾을 수 없습니다. GPS가 활성화되어 있는지 확인해주세요.');
-            } else if (positionError.code === 3) {
-              setError('위치 요청 시간이 초과되었습니다. 다시 시도해주세요.');
+              // 기본 위치로 날씨 정보 표시
+              const defaultLocation = getDefaultLocation();
+              setLocation(defaultLocation);
+              fetchWeatherData(defaultLocation.lat, defaultLocation.lon);
             } else {
-              setError('위치 정보를 가져오는데 실패했습니다.');
+              // 기타 오류 시에도 기본 위치 사용
+              const defaultLocation = getDefaultLocation();
+              setLocation(defaultLocation);
+              fetchWeatherData(defaultLocation.lat, defaultLocation.lon);
             }
-            setLoading(false);
           },
           {
             enableHighAccuracy: true,
-            timeout: 10000,
+            timeout: 5000, // 5초로 단축
             maximumAge: 300000
           }
         );
       } else {
-        setError('이 브라우저는 위치 정보를 지원하지 않습니다.');
-        setLoading(false);
+        // 위치 지원 안되는 브라우저도 기본 위치 사용
+        const defaultLocation = getDefaultLocation();
+        setLocation(defaultLocation);
+        await fetchWeatherData(defaultLocation.lat, defaultLocation.lon);
       }
     } catch (error) {
       console.error('위치 정보 가져오기 실패:', error);
-      setError('위치 정보를 가져오는데 실패했습니다.');
-      setLoading(false);
+      // 오류 발생 시에도 기본 위치 사용
+      const defaultLocation = getDefaultLocation();
+      setLocation(defaultLocation);
+      await fetchWeatherData(defaultLocation.lat, defaultLocation.lon);
     }
   };
 
@@ -323,6 +345,12 @@ export default function LocationBasedWeather() {
   };
 
   useEffect(() => {
+    // 페이지 로드 시 즉시 기본 위치로 시작
+    const defaultLocation = getDefaultLocation();
+    setLocation(defaultLocation);
+    fetchWeatherData(defaultLocation.lat, defaultLocation.lon);
+    
+    // 백그라운드에서 현재 위치 시도
     getCurrentLocation();
   }, []);
 
@@ -375,7 +403,14 @@ export default function LocationBasedWeather() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">현재 날씨</h2>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">📍 {location.cityName}</span>
+            <span className="text-sm text-gray-600">
+              📍 {location?.cityName}
+              {location?.isCurrentLocation && (
+                <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                  현재 위치
+                </span>
+              )}
+            </span>
             <button 
               onClick={handleLocationRefresh}
               className="text-sm text-blue-600 hover:text-blue-800 underline cursor-pointer"
@@ -443,6 +478,21 @@ export default function LocationBasedWeather() {
           region={getRegionFromCityName(location.nearestCityName)}
           cityName={getHierarchicalLocationName(location.nearestCityName)}
         />
+      )}
+
+      {/* 위치 권한 안내 메시지 */}
+      {permissionDenied && (
+        <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+          <p className="text-sm text-orange-700">
+            더 정확한 날씨 정보를 위해 위치 접근 권한을 허용해주세요.
+            <button 
+              onClick={getCurrentLocation}
+              className="ml-2 text-blue-600 hover:text-blue-800 underline"
+            >
+              위치 권한 허용
+            </button>
+          </p>
+        </div>
       )}
     </div>
   );
