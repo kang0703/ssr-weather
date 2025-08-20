@@ -25,6 +25,23 @@ interface EventItem {
   cat3?: string;
 }
 
+// 변환된 이벤트 데이터 타입 추가
+interface TransformedEvent {
+  title: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  description: string;
+  imageUrl?: string;
+  contentId: string;
+  tel: string;
+  homepage: string;
+  category: string;
+  cat1: string;
+  cat2: string;
+  cat3: string;
+}
+
 interface ApiResponse {
   response?: {
     body?: {
@@ -170,7 +187,7 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
     console.log(`최종 결과: ${events.length}개 행사`);
     
     // 필터링 로직 개선
-    const regionEvents = events.filter((event: EventItem) => {
+    const regionEvents = events.filter((event: TransformedEvent) => {
       if (region && region !== 'all') {
         const eventLocation = event.location?.toLowerCase() || '';
         const regionKeywords = getRegionKeywords(region);
