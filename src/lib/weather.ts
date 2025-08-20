@@ -66,8 +66,9 @@ function translateWeatherDescription(description: string): string {
   return weatherMap[description] || description;
 }
 
-export async function getCurrentWeather(lat: number, lon: number, env?: CloudflareEnv): Promise<WeatherData> {
-  const apiKey = env?.OPENWEATHER_API_KEY || process.env.OPENWEATHER_API_KEY;
+export async function getCurrentWeather(lat: number, lon: number): Promise<WeatherData> {
+  // process.env만 사용 (Next.js 표준)
+  const apiKey = process.env.OPENWEATHER_API_KEY;
   
   if (!apiKey) {
     throw new Error('OpenWeather API 키가 설정되지 않았습니다.');

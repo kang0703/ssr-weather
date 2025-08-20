@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getCurrentWeather, getWeatherForecast } from '@/lib/weather';
 
-export async function GET(request: NextRequest, { params }: { params: any }, context?: { env: CloudflareEnv }) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const lat = searchParams.get('lat');
   const lon = searchParams.get('lon');
@@ -13,10 +13,10 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
 
   try {
     if (type === 'forecast') {
-      const forecast = await getWeatherForecast(parseFloat(lat), parseFloat(lon), context?.env);
+      const forecast = await getWeatherForecast(parseFloat(lat), parseFloat(lon));
       return Response.json(forecast);
     } else {
-      const weather = await getCurrentWeather(parseFloat(lat), parseFloat(lon), context?.env);
+      const weather = await getCurrentWeather(parseFloat(lat), parseFloat(lon));
       return Response.json(weather);
     }
   } catch (error) {
