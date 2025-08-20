@@ -69,7 +69,7 @@ export default function WeatherSection() {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold mb-4">현재 날씨</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-900">현재 날씨</h2>
       <div className="text-center">
         <div className="text-4xl font-bold text-blue-600">{weather.temperature}°C</div>
         <div className="text-lg text-gray-600">{weather.description}</div>
@@ -85,9 +85,19 @@ export default function WeatherSection() {
             <div className="grid grid-cols-5 gap-2 min-w-[665px]">
               {forecast.map((day, index) => (
                 <div key={index} className="text-center p-2 bg-gray-50 rounded">
-                  <div className="text-sm font-medium">{day.date}</div>
+                  <div className="text-sm font-medium text-gray-900">{day.date}</div>
                   <div className="text-lg font-bold text-blue-600">{day.temp_max}°</div>
                   <div className="text-sm text-gray-500">{day.temp_min}°</div>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-amber-700 font-medium">최고</span>
+                      <div className="text-sm font-bold text-amber-800">{day.temp_max}°</div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-slate-600 font-medium">최저</span>
+                      <div className="text-sm font-bold text-slate-700">{day.temp_min}°</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

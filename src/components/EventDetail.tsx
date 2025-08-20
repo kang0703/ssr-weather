@@ -290,7 +290,8 @@ export default function EventDetail({ eventId }: EventDetailProps) {
                   <button
                     onClick={() => {
                       if (event.tel && event.tel.trim() !== '') {
-                        window.open(`tel:${event.tel}`);
+                        // 새창을 열지 않고 현재 창에서 전화 앱 실행
+                        window.location.href = `tel:${event.tel}`;
                       } else {
                         alert('전화번호 정보가 없습니다.');
                       }

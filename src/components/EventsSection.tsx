@@ -89,14 +89,10 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
                 const eventLocation = event.location?.toLowerCase() || '';
                 const regionKeywords = getRegionKeywords(region);
                 
-                // 디버깅을 위한 로그 추가
-                console.log(`필터링: region=${region}, eventLocation=${eventLocation}, keywords=${regionKeywords.join(', ')}`);
-                
                 const isMatch = regionKeywords.some(keyword => 
                   eventLocation.includes(keyword.toLowerCase())
                 );
                 
-                console.log(`매칭 결과: ${isMatch ? '일치' : '불일치'}`);
                 return isMatch;
               }
               return true;

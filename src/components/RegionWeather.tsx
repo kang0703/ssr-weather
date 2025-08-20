@@ -34,22 +34,15 @@ export default function RegionWeather({ region, regionName }: RegionWeatherProps
 
       const { lat, lon } = coordinates;
       
-      // 콘솔 로그에서 regionName 사용 (representativeCity 대신)
-      console.log(`${regionName} 날씨 데이터 요청 (대표 좌표):`, { lat, lon, region: regionName });
-
       // API 라우트를 통해 데이터 가져오기
       const [weatherRes, forecastRes] = await Promise.all([
         fetch(`/api/weather?lat=${lat}&lon=${lon}&type=current`),
         fetch(`/api/weather?lat=${lat}&lon=${lon}&type=forecast`)
       ]);
 
-      console.log('날씨 API 응답 상태:', { weather: weatherRes.status, forecast: forecastRes.status });
-
       if (weatherRes.ok && forecastRes.ok) {
         const weatherData = await weatherRes.json();
         const forecastData = await forecastRes.json();
-        
-        console.log('날씨 데이터 받음:', { weather: weatherData, forecast: forecastData });
         
         setWeather(weatherData as WeatherData);
         setForecast(forecastData as ForecastData[]);

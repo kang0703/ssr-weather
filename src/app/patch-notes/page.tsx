@@ -100,89 +100,91 @@ export default function PatchNotesPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">패치노트</h1>
-        <p className="text-xl text-gray-600">
-          갈래말래 날씨여행의 업데이트 내역과 새로운 기능들을 확인하세요.
-        </p>
-      </div>
+    <div className="min-h-screen bg-white"> {/* 하얀색 배경 추가 */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">패치노트</h1>
+          <p className="text-xl text-gray-600">
+            갈래말래 날씨여행의 업데이트 내역과 새로운 기능들을 확인하세요.
+          </p>
+        </div>
 
-      <div className="space-y-8">
-        {patchNotes.map((note, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <h2 className="text-2xl font-bold text-gray-900">v{note.version}</h2>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(note.type)}`}>
-                  {note.type === 'major' ? '주요 업데이트' : 
-                   note.type === 'minor' ? '기능 개선' : '버그 수정'}
-                </span>
+        <div className="space-y-8">
+          {patchNotes.map((note, index) => (
+            <div key={index} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <h2 className="text-2xl font-bold text-gray-900">v{note.version}</h2>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(note.type)}`}>
+                    {note.type === 'major' ? '주요 업데이트' : 
+                     note.type === 'minor' ? '기능 개선' : '버그 수정'}
+                  </span>
+                </div>
+                <span className="text-sm text-gray-500">{note.date}</span>
               </div>
-              <span className="text-sm text-gray-500">{note.date}</span>
+              
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">{note.title}</h3>
+              <p className="text-gray-600 mb-6">{note.description}</p>
+              
+              {note.features.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    새로운 기능
+                  </h4>
+                  <ul className="space-y-2">
+                    {note.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="text-gray-600 flex items-start">
+                        <span className="text-green-600 mr-2 mt-1">•</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {note.improvements.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    개선사항
+                  </h4>
+                  <ul className="space-y-2">
+                    {note.improvements.map((improvement, improvementIndex) => (
+                      <li key={improvementIndex} className="text-gray-600 flex items-start">
+                        <span className="text-blue-600 mr-2 mt-1">•</span>
+                        {improvement}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {note.fixes.length > 0 && (
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <svg className="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    버그 수정
+                  </h4>
+                  <ul className="space-y-2">
+                    {note.fixes.map((fix, fixIndex) => (
+                      <li key={fixIndex} className="text-gray-600 flex items-start">
+                        <span className="text-red-600 mr-2 mt-1">•</span>
+                        {fix}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">{note.title}</h3>
-            <p className="text-gray-600 mb-6">{note.description}</p>
-            
-            {note.features.length > 0 && (
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                  <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  새로운 기능
-                </h4>
-                <ul className="space-y-2">
-                  {note.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="text-gray-600 flex items-start">
-                      <span className="text-green-600 mr-2 mt-1">•</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            
-            {note.improvements.length > 0 && (
-              <div className="mb-6">
-                <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                  <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  개선사항
-                </h4>
-                <ul className="space-y-2">
-                  {note.improvements.map((improvement, improvementIndex) => (
-                    <li key={improvementIndex} className="text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2 mt-1">•</span>
-                      {improvement}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            
-            {note.fixes.length > 0 && (
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                  <svg className="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
-                  버그 수정
-                </h4>
-                <ul className="space-y-2">
-                  {note.fixes.map((fix, fixIndex) => (
-                    <li key={fixIndex} className="text-gray-600 flex items-start">
-                      <span className="text-red-600 mr-2 mt-1">•</span>
-                      {fix}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

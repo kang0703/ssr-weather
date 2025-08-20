@@ -452,7 +452,7 @@ export default function LocationBasedWeather() {
     <div className="space-y-6">
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">현재 날씨</h2>
+          <h2 className="text-2xl font-bold text-gray-900">현재 날씨</h2>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-gray-600">
               📍 {location?.cityName}
@@ -501,17 +501,17 @@ export default function LocationBasedWeather() {
                 <div className="grid grid-cols-5 gap-2 min-w-[665px]">
                   {forecast.map((day, index) => (
                     <div key={index} className="text-center p-2 bg-gray-50 rounded">
-                      <div className="text-sm font-medium">{day.date}</div>
+                      <div className="text-sm font-medium text-gray-900">{day.date}</div>
                       <WeatherIcon icon={day.icon} size={32} className="mx-auto my-1 flex items-center justify-center" />
                       <div className="text-xs text-gray-600 mb-2">{day.description}</div>
                       <div className="flex items-center justify-center gap-2">
                         <div className="flex items-center gap-1">
-                          <span className="text-xs text-red-500 font-medium">최고</span>
-                          <div className="text-lg font-bold text-red-600">{day.temp_max}°</div>
+                          <span className="text-xs text-amber-700 font-medium">최고</span>
+                          <div className="text-sm font-bold text-amber-800">{day.temp_max}°</div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <span className="text-xs text-blue-500 font-medium">최저</span>
-                          <div className="text-sm text-blue-600">{day.temp_min}°</div>
+                          <span className="text-xs text-slate-600 font-medium">최저</span>
+                          <div className="text-sm font-bold text-slate-700">{day.temp_min}°</div>
                         </div>
                       </div>
                     </div>
