@@ -35,6 +35,31 @@ interface ApiResponse {
   };
 }
 
+// 지역별 검색을 위한 지역 코드 매핑
+function getRegionCode(region: string): string {
+  const regionCodeMap: { [key: string]: string } = {
+    'seoul': '1',      // 서울특별시
+    'busan': '2',      // 부산광역시
+    'daegu': '3',      // 대구광역시
+    'incheon': '4',    // 인천광역시
+    'gwangju': '5',    // 광주광역시
+    'daejeon': '6',    // 대전광역시
+    'ulsan': '7',      // 울산광역시
+    'sejong': '8',     // 세종특별자치시
+    'gyeonggi': '31',  // 경기도
+    'chungbuk': '33',  // 충청북도
+    'chungnam': '34',  // 충청남도
+    'jeonbuk': '35',   // 전라북도
+    'jeonnam': '36',   // 전라남도
+    'gyeongbuk': '37', // 경상북도
+    'gyeongnam': '38', // 경상남도
+    'gangwon': '32',   // 강원도
+    'jeju': '39'       // 제주특별자치도
+  };
+  
+  return regionCodeMap[region] || '';
+}
+
 // 타입 가드 함수
 function isApiResponse(data: unknown): data is ApiResponse {
   return (
@@ -48,13 +73,41 @@ function isApiResponse(data: unknown): data is ApiResponse {
     ((data as any).response as any).body !== null &&
     'items' in (((data as any).response as any).body as any) &&
     typeof ((((data as any).response as any).body as any).items as any) === 'object' &&
-    ((((data as any).response as any).body as any).items as any) !== null &&
+    (((data as any).response as any).body as any).items !== null &&
     'item' in (((((data as any).response as any).body as any).items as any) as any)
   );
 }
 
+// 지역별 키워드 매칭 함수 개선
+const getRegionKeywords = (region: string): string[] => {
+  const regionMap: { [key: string]: string[] } = {
+    'seoul': ['서울특별시', '서울'],
+    'busan': ['부산광역시', '부산'],
+    'daegu': ['대구광역시', '대구'],
+    'incheon': ['인천광역시', '인천'],
+    'gwangju': ['광주광역시', '광주'],
+    'daejeon': ['대전광역시', '대전'],
+    'ulsan': ['울산광역시', '울산'],
+    'sejong': ['세종특별자치시', '세종'],
+    'gyeonggi': ['경기도', '경기'],
+    'chungbuk': ['충청북도', '충북'],
+    'chungnam': ['충청남도', '충남'],
+    'jeonbuk': ['전라북도', '전북'],
+    'jeonnam': ['전라남도', '전남'],
+    'gyeongbuk': ['경상북도', '경북'],
+    'gyeongnam': ['경상남도', '경남'],
+    'gangwon': ['강원도', '강원'],
+    'jeju': ['제주특별자치도', '제주도', '제주']
+  };
+  
+  return regionMap[region] || [region];
+};
+
 export async function GET(request: NextRequest, { params }: { params: any }, context?: { env: CloudflareEnv }) {
   try {
+    const { searchParams } = new URL(request.url);
+    const region = searchParams.get('region');
+    
     const apiKey = context?.env?.PUBLIC_DATA_API_KEY || process.env.PUBLIC_DATA_API_KEY;
     if (!apiKey) {
       throw new Error('공공데이터 API 키가 설정되지 않았습니다.');
@@ -73,15 +126,19 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
     // A02 카테고리 (인문/문화/예술/역사)만 조회
     const allEvents: EventItem[] = [];
     
-    // 축제/행사 (searchFestival2) - A02 카테고리
+    // 항상 전체 데이터를 가져오고, region 파라미터는 클라이언트에서 사용
+    const festivalUrl = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
+    
     try {
-      const festivalUrl = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
       const festivalRes = await fetch(festivalUrl);
       if (festivalRes.ok) {
         const festivalData = await festivalRes.json();
         if (isApiResponse(festivalData) && festivalData.response?.body?.items?.item) {
           allEvents.push(...festivalData.response.body.items.item);
+          console.log(`전체 행사: ${festivalData.response.body.items.item.length}개`);
         }
+      } else {
+        console.warn('전체 행사 조회 실패:', festivalRes.status);
       }
     } catch (error) {
       console.warn('축제/행사 조회 실패:', error);
@@ -92,26 +149,61 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
       index === self.findIndex(e => e.contentid === event.contentid)
     );
     
-    if (uniqueEvents.length > 0) {
-      const events = uniqueEvents.map((item: EventItem) => {
-        return {
-          title: item.title || '제목 없음',
-          startDate: item.eventstartdate || '',
-          endDate: item.eventenddate || '',
-          location: item.addr1 || '위치 정보 없음',
-          description: item.overview || '설명 없음',
-          imageUrl: item.firstimage || item.firstimage2,
-          contentId: item.contentid || '',
-          tel: item.tel || '',
-          homepage: item.homepage || '',
-          category: item.cat1 || '기타',
-          cat1: item.cat1 || '',
-          cat2: item.cat2 || '',
-          cat3: item.cat3 || '',
-        };
+    const events = uniqueEvents.map((item: EventItem) => {
+      return {
+        title: item.title || '제목 없음',
+        startDate: item.eventstartdate || '',
+        endDate: item.eventenddate || '',
+        location: item.addr1 || '위치 정보 없음',
+        description: item.overview || '설명 없음',
+        imageUrl: item.firstimage || item.firstimage2,
+        contentId: item.contentid || '',
+        tel: item.tel || '',
+        homepage: item.homepage || '',
+        category: item.cat1 || '기타',
+        cat1: item.cat1 || '',
+        cat2: item.cat2 || '',
+        cat3: item.cat3 || '',
+      };
+    });
+    
+    console.log(`최종 결과: ${events.length}개 행사`);
+    
+    // 필터링 로직 개선
+    const regionEvents = events.filter((event: EventItem) => {
+      if (region && region !== 'all') {
+        const eventLocation = event.location?.toLowerCase() || '';
+        const regionKeywords = getRegionKeywords(region);
+        
+        // 더 정확한 매칭: 전체 주소에서 지역명이 정확히 포함되어야 함
+        const isMatch = regionKeywords.some(keyword => {
+          const lowerKeyword = keyword.toLowerCase();
+          
+          // "대구광역시" → "대구광역시" (정확한 매칭)
+          if (eventLocation.includes(lowerKeyword)) {
+            return true;
+          }
+          
+          // "대구" → "대구광역시" (축약형 매칭)
+          if (lowerKeyword.length <= 4 && eventLocation.includes(lowerKeyword)) {
+            return true;
+          }
+          
+          return false;
+        });
+        
+        console.log(`필터링: region=${region}, eventLocation=${eventLocation}, keywords=${regionKeywords.join(', ')}, 매칭=${isMatch}`);
+        return isMatch;
+      }
+      return true;
+    });
+    
+    if (regionEvents.length > 0) {
+      return Response.json({ 
+        success: true, 
+        events: regionEvents,
+        requestedRegion: region // 클라이언트에서 사용할 수 있도록
       });
-      
-      return Response.json({ success: true, events });
     }
     
     return Response.json({ success: true, events: [] });

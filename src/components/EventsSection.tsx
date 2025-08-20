@@ -77,7 +77,7 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
       try {
         setLoading(true);
         // 지역별 행사도 전국 행사와 동일한 API 사용하여 데이터 일관성 보장
-        const response = await fetch('/api/events');
+        const response = await fetch(`/api/events?region=${region}`);
         if (response.ok) {
           const data = await response.json() as { success: boolean; events: EventData[] };
           if (data.success && data.events) {
@@ -88,7 +88,16 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
                 // 행사 위치에서 지역 정보 확인 (간단한 키워드 매칭)
                 const eventLocation = event.location?.toLowerCase() || '';
                 const regionKeywords = getRegionKeywords(region);
-                return regionKeywords.some(keyword => eventLocation.includes(keyword));
+                
+                // 디버깅을 위한 로그 추가
+                console.log(`필터링: region=${region}, eventLocation=${eventLocation}, keywords=${regionKeywords.join(', ')}`);
+                
+                const isMatch = regionKeywords.some(keyword => 
+                  eventLocation.includes(keyword.toLowerCase())
+                );
+                
+                console.log(`매칭 결과: ${isMatch ? '일치' : '불일치'}`);
+                return isMatch;
               }
               return true;
             });
@@ -119,26 +128,26 @@ export default function EventsSection({ region = 'seoul', cityName = '서울' }:
     fetchEvents();
   }, [region]);
 
-  // 지역별 키워드 매칭 함수
+  // 지역별 키워드 매칭 함수 - 최신 명칭 반영
   const getRegionKeywords = (region: string): string[] => {
     const regionMap: { [key: string]: string[] } = {
-      'seoul': ['서울', '강남', '강북', '강동', '강서', '관악', '광진', '구로', '금천', '노원', '도봉', '동대문', '동작', '마포', '서대문', '서초', '성동', '성북', '송파', '양천', '영등포', '용산', '은평', '종로', '중구', '중랑'],
-      'busan': ['부산', '강서', '금정', '남구', '동구', '동래', '부산진', '북구', '사상', '사하', '서구', '수영', '연제', '영도', '중구', '해운대', '기장'],
-      'daegu': ['대구', '남구', '달서', '달성', '동구', '북구', '서구', '수성', '중구'],
-      'incheon': ['인천', '계양', '남구', '남동', '동구', '부평', '서구', '연수', '중구', '강화', '옹진'],
-      'gwangju': ['광주', '광산', '남구', '동구', '북구', '서구'],
-      'daejeon': ['대전', '대덕', '동구', '서구', '유성', '중구'],
-      'ulsan': ['울산', '남구', '동구', '북구', '울주', '중구'],
-      'sejong': ['세종'],
-      'gyeonggi': ['경기', '수원', '성남', '의정부', '안양', '부천', '광명', '평택', '과천', '오산', '시흥', '군포', '의왕', '하남', '용인', '파주', '이천', '안성', '김포', '화성', '광주', '여주', '양평', '고양', '안산', '양주', '구리', '남양주', '오산', '시흥', '군포', '의왕', '하남', '용인', '파주', '이천', '안성', '김포', '화성', '광주', '여주', '양평', '고양', '안산', '양주', '구리', '남양주'],
-      'chungbuk': ['충북', '청주', '충주', '제천', '보은', '옥천', '영동', '증평', '진천', '괴산', '음성', '단양'],
-      'chungnam': ['충남', '천안', '공주', '보령', '아산', '서산', '논산', '계룡', '당진', '금산', '부여', '서천', '청양', '홍성', '예산', '태안'],
-      'jeonbuk': ['전북', '전주', '군산', '익산', '정읍', '남원', '김제', '완주', '진안', '무주', '장수', '임실', '순창', '고창', '부안'],
-      'jeonnam': ['전남', '목포', '여수', '순천', '나주', '광양', '담양', '곡성', '구례', '고흥', '보성', '화순', '장흥', '강진', '해남', '영암', '무안', '함평', '영광', '장성', '완도', '진도'],
-      'gyeongbuk': ['경북', '포항', '경주', '김천', '안동', '구미', '영주', '영천', '상주', '문경', '경산', '군위', '의성', '청송', '영양', '영덕', '청도', '고령', '성주', '칠곡', '예천', '봉화', '울진', '울릉'],
-      'gyeongnam': ['경남', '창원', '진주', '통영', '사천', '김해', '밀양', '거제', '양산', '의령', '함안', '창녕', '고성', '남해', '하동', '산청', '함양', '거창', '합천'],
-      'gangwon': ['강원', '춘천', '원주', '강릉', '태백', '속초', '삼척', '홍천', '횡성', '영월', '평창', '정선', '철원', '화천', '양구', '인제', '고성', '양양', '동해'],
-      'jeju': ['제주', '제주시', '서귀포']
+      'seoul': ['서울특별시'],
+      'busan': ['부산광역시'],
+      'daegu': ['대구광역시'],
+      'incheon': ['인천광역시'],
+      'gwangju': ['광주광역시'],
+      'daejeon': ['대전광역시'],
+      'ulsan': ['울산광역시'],
+      'sejong': ['세종특별자치시'],
+      'gyeonggi': ['경기도'],
+      'chungbuk': ['충청북도'],
+      'chungnam': ['충청남도'],
+      'jeonbuk': ['전라북도'],
+      'jeonnam': ['전라남도'],
+      'gyeongbuk': ['경상북도'],
+      'gyeongnam': ['경상남도'],
+      'gangwon': ['강원특별자치도', '강원'],  // ✅ 수정
+      'jeju': ['제주특별자치도', '제주']      // ✅ 확인
     };
     
     return regionMap[region] || [region];
