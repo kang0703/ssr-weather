@@ -496,7 +496,7 @@ export default function LocationBasedWeather() {
           
           {forecast.length > 0 && (
             <div className="mt-6">
-              <h3 className="text-xl font-semibold mb-3">5일 예보</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">5일 예보</h3>
               <div className="overflow-x-auto">
                 <div className="grid grid-cols-5 gap-2 min-w-[665px]">
                   {forecast.map((day, index) => (
