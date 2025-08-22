@@ -14,6 +14,28 @@ export default function EventDetail({ eventId }: EventDetailProps) {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // 이미지 URL을 HTTPS로 변환하는 함수 추가 (기존 코드 건드리지 않음)
+  const forceHttps = (url: string): string => {
+    if (!url) return '';
+    
+    // HTTP URL을 HTTPS로 변환
+    if (url.startsWith('http://')) {
+      return url.replace('http://', 'https://');
+    }
+    
+    // 프로토콜이 없는 경우 HTTPS 추가
+    if (url.startsWith('//')) {
+      return `https:${url}`;
+    }
+    
+    // 상대 경로인 경우 기본 URL과 결합
+    if (url.startsWith('/')) {
+      return `https://tong.visitkorea.or.kr${url}`;
+    }
+    
+    return url;
+  };
+
   // 날짜 형식을 읽기 쉽게 변환하는 함수
   const formatDate = (dateString: string): string => {
     if (!dateString || dateString.length !== 8) return '날짜 정보 없음';
@@ -191,7 +213,7 @@ export default function EventDetail({ eventId }: EventDetailProps) {
       {event.imageUrl && (
         <div className="relative h-64 md:h-96">
           <img
-            src={event.imageUrl}
+            src={forceHttps(event.imageUrl)}
             alt={event.title}
             className="w-full h-full object-cover"
             onError={(e) => {
@@ -363,7 +385,7 @@ export default function EventDetail({ eventId }: EventDetailProps) {
               {event.images.slice(0, 8).map((imageUrl, index) => (
                 <div key={index} className="aspect-square rounded-lg overflow-hidden">
                   <img
-                    src={imageUrl}
+                    src={forceHttps(imageUrl)}
                     alt={`${event.title} 이미지 ${index + 1}`}
                     className="w-full h-full object-cover hover:scale-105 transition-transform"
                     onError={(e) => {

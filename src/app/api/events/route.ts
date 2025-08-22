@@ -152,13 +152,10 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
         const festivalData = await festivalRes.json();
         if (isApiResponse(festivalData) && festivalData.response?.body?.items?.item) {
           allEvents.push(...festivalData.response.body.items.item);
-          console.log(`전체 행사: ${festivalData.response.body.items.item.length}개`);
         }
-      } else {
-        console.warn('전체 행사 조회 실패:', festivalRes.status);
       }
     } catch (error) {
-      console.warn('축제/행사 조회 실패:', error);
+      // 축제/행사 조회 실패 시 무시
     }
     
     // 중복 제거 및 데이터 변환
@@ -184,8 +181,6 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
       };
     });
     
-    console.log(`최종 결과: ${events.length}개 행사`);
-    
     // 필터링 로직 개선
     const regionEvents = events.filter((event: TransformedEvent) => {
       if (region && region !== 'all') {
@@ -209,7 +204,6 @@ export async function GET(request: NextRequest, { params }: { params: any }, con
           return false;
         });
         
-        console.log(`필터링: region=${region}, eventLocation=${eventLocation}, keywords=${regionKeywords.join(', ')}, 매칭=${isMatch}`);
         return isMatch;
       }
       return true;

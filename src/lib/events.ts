@@ -108,19 +108,13 @@ export async function getEventDetail(
   const baseUrl = 'https://apis.data.go.kr/B551011/KorService2';
   
   try {
-    console.log('상세정보 조회 시작:', contentId);
-    
     // 1. 기본 상세정보 조회 - detailCommon1 (원래대로 복원)
     const detailUrl = `${baseUrl}/detailCommon1?serviceKey=${encodeURIComponent(apiKey)}&contentId=${contentId}&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y`;
     
-    console.log('상세정보 API URL:', detailUrl);
-    
     const detailRes = await fetch(detailUrl);
-    console.log('상세정보 API 응답 상태:', detailRes.status);
     
     if (!detailRes.ok) {
       const errorText = await detailRes.text();
-      console.error('상세정보 API 응답 실패:', detailRes.status, errorText);
       
       // API 키 문제인지 확인
       if (errorText.includes('Policy Falsified') || errorText.includes('Service Not Found')) {
@@ -131,17 +125,14 @@ export async function getEventDetail(
     }
     
     const detailData = await detailRes.json();
-    console.log('기본 상세정보 응답:', detailData);
     
     const detailItem = (detailData as any).response?.body?.items?.item?.[0];
     if (!detailItem) {
-      console.log('상세정보 아이템이 없습니다. 응답:', detailData);
       return null;
     }
     
     // contentTypeId 추출
     const contentTypeId = detailItem.contenttypeid;
-    console.log('contentTypeId:', contentTypeId);
     
     // 2. 소개정보 조회 - detailIntro1 (원래대로 복원)
     let introItem = null;
@@ -152,13 +143,10 @@ export async function getEventDetail(
         const introRes = await fetch(introUrl);
         if (introRes.ok) {
           const introData = await introRes.json();
-          console.log('소개정보 응답:', introData);
           introItem = (introData as any).response?.body?.items?.item?.[0];
-        } else {
-          console.warn('소개정보 API 응답 실패:', introRes.status);
         }
       } catch (introError) {
-        console.warn('소개정보 조회 실패:', introError);
+        // 소개정보 조회 실패 시 무시
       }
     }
     
@@ -171,13 +159,10 @@ export async function getEventDetail(
         const infoRes = await fetch(infoUrl);
         if (infoRes.ok) {
           const infoData = await infoRes.json();
-          console.log('반복정보 응답:', infoData);
           infoItem = (infoData as any).response?.body?.items?.item?.[0];
-        } else {
-          console.warn('반복정보 API 응답 실패:', infoRes.status);
         }
       } catch (infoError) {
-        console.warn('반복정보 조회 실패:', infoError);
+        // 반복정보 조회 실패 시 무시
       }
     }
     
@@ -189,13 +174,10 @@ export async function getEventDetail(
       const imageRes = await fetch(imageUrl);
       if (imageRes.ok) {
         const imageData = await imageRes.json();
-        console.log('이미지 정보 응답:', imageData);
         imageItems = (imageData as any).response?.body?.items?.item || [];
-      } else {
-        console.warn('이미지 정보 API 응답 실패:', imageRes.status);
       }
     } catch (imageError) {
-      console.warn('이미지 정보 조회 실패:', imageError);
+      // 이미지 정보 조회 실패 시 무시
     }
     
     // 결과 데이터 구성 (기존과 동일)
@@ -246,7 +228,6 @@ export async function getEventDetail(
       images: imageItems.map((img: any) => forceHttps(img.originimgurl || img.smallimageurl)).filter(Boolean),
     };
     
-    console.log('최종 결과:', result);
     return result;
     
   } catch (error) {
@@ -275,11 +256,7 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
     // 전국 행사 정보 조회 (지역 코드 없이)
     const url = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=50&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
     
-    console.log('API 요청 URL:', url);
-    
     const response = await fetch(url);
-    console.log('API 응답 상태:', response.status);
-    console.log('API 응답 헤더:', Object.fromEntries(response.headers.entries()));
     
     if (!response.ok) {
       throw new Error(`API 응답 실패: ${response.status} ${response.statusText}`);
@@ -287,15 +264,12 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
     
     // 응답 텍스트를 먼저 확인
     const responseText = await response.text();
-    console.log('API 응답 텍스트 (처음 500자):', responseText.substring(0, 500));
     
     // JSON 파싱 시도
     let data;
     try {
       data = JSON.parse(responseText);
     } catch (parseError) {
-      console.error('JSON 파싱 실패:', parseError);
-      console.error('응답이 JSON이 아닙니다. 응답 내용:', responseText);
       throw new Error('API 응답이 유효한 JSON 형식이 아닙니다. API 키나 요청 형식을 확인해주세요.');
     }
     
@@ -315,11 +289,9 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
         sigunguCode: item.sigungucode || '',
       }));
       
-      console.log('파싱된 행사 개수:', events.length);
       return events;
     }
     
-    console.log('API 응답에 행사 데이터가 없습니다:', data);
     return [];
   } catch (error) {
     console.error('전국 행사 API 오류:', error);

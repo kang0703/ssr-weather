@@ -1,15 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { EventData } from '@/lib/events';
 
-export default function AllEventsPage() {
+export default function EventsPage() {
   const [events, setEvents] = useState<EventData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showAll, setShowAll] = useState(false);
+  const router = useRouter();
 
   // 날짜 포맷 함수 (EventsSection과 동일)
   const formatDate = (dateString: string): string => {
@@ -20,6 +21,28 @@ export default function AllEventsPage() {
     const day = dateString.substring(6, 8);
     
     return `${year}.${month}.${day}`;
+  };
+
+  // 이미지 URL을 HTTPS로 변환하는 함수 추가
+  const forceHttps = (url: string): string => {
+    if (!url) return '';
+    
+    // HTTP URL을 HTTPS로 변환
+    if (url.startsWith('http://')) {
+      return url.replace('http://', 'https://');
+    }
+    
+    // 프로토콜이 없는 경우 HTTPS 추가
+    if (url.startsWith('//')) {
+      return `https:${url}`;
+    }
+    
+    // 상대 경로인 경우 기본 URL과 결합
+    if (url.startsWith('/')) {
+      return `https://tong.visitkorea.or.kr${url}`;
+    }
+    
+    return url;
   };
 
   useEffect(() => {
@@ -170,7 +193,7 @@ export default function AllEventsPage() {
                     {event.imageUrl && (
                       <div className="mb-3">
                         <img 
-                          src={event.imageUrl} 
+                          src={forceHttps(event.imageUrl)}
                           alt={event.title}
                           className="w-full h-48 object-cover rounded-lg"
                           onError={(e) => {
