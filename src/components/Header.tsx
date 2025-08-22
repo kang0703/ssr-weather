@@ -53,8 +53,11 @@ export default function Header() {
           <button 
             className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 cursor-pointer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="메뉴 열기"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
@@ -99,7 +102,7 @@ export default function Header() {
         
         {/* 모바일 메뉴 */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200">
+          <div id="mobile-menu" className="md:hidden border-t border-gray-200">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {/* 전국행사 섹션 */}
               <div className="border-b border-gray-200 pb-3">
