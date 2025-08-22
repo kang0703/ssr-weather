@@ -9,33 +9,39 @@ export default function WeatherIcon({ icon, size = 64, className = '' }: Weather
     // OpenWeatherMap 아이콘 코드에 따른 SVG 아이콘
     const icons: { [key: string]: string } = {
       // 맑음 (Clear)
-      '01d': `<svg width="${size}" height="${size}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <style>
-          :root {
-            --sun-core: #FFC107;
-            --sun-ray: #FFECB3;
-          }
-          @media (prefers-color-scheme: dark) {
-            :root {
-              --sun-core: #FFD54F;
-              --sun-ray: #FFB300;
-            }
-          }
-          .ray { transform-origin: 32px 32px; animation: rotate 8s linear infinite; }
-          @keyframes rotate { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
-        </style>
-        <g class="ray" fill="var(--sun-ray)">
-          <rect x="30" y="2" width="4" height="12" rx="2"/>
-          <rect x="30" y="50" width="4" height="12" rx="2"/>
-          <rect x="2"  y="30" width="12" height="4" rx="2"/>
-          <rect x="50" y="30" width="12" height="4" rx="2"/>
-          <rect x="8"  y="8"  width="4" height="12" rx="2" transform="rotate(45 10 14)"/>
-          <rect x="52" y="52" width="4" height="12" rx="2" transform="rotate(45 54 58)"/>
-          <rect x="8"  y="44" width="4" height="12" rx="2" transform="rotate(-45 10 50)"/>
-          <rect x="52" y="12" width="4" height="12" rx="2" transform="rotate(-45 54 18)"/>
-        </g>
-        <circle cx="32" cy="32" r="12" fill="var(--sun-core)"/>
-      </svg>`,
+      '01d': `<svg width="${size}" height="${size}" viewBox="0 0 179 179" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .sun-glow { animation: pulse 3s ease-in-out infinite; }
+    .sun-rays { animation: rotate 20s linear infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+  
+  <g class="sun-rays" transform-origin="90.1821 88.7404">
+    <circle cx="90.1821" cy="88.7404" r="47.3348" fill="url(#paint0_radial_17_70)" class="sun-glow"/>
+    <path d="M127.906 52.6987C131.75 41.3576 140.16 42.8473 145.927 45.0098C149.851 46.6918 158.229 47.2684 160.343 36.1195" stroke="#FFDF18" stroke-width="4"/>
+    <path d="M140.459 82.6444C147.976 73.3224 155.358 77.6186 160.026 81.6357C163.131 84.5669 170.797 87.9948 176.623 78.2572" stroke="#FFDF18" stroke-width="4"/>
+    <path d="M127.906 126.191C138.14 119.973 143.625 126.519 146.654 131.882C148.58 135.693 154.627 141.518 163.412 134.336" stroke="#FFDF18" stroke-width="4"/>
+    <path d="M93.894 176.809C85.2647 168.506 90.1897 161.529 94.5994 157.229C97.7907 154.393 101.876 147.055 92.6846 140.4" stroke="#FFDF18" stroke-width="4"/>
+    <path d="M2 89.1463C9.55004 79.8513 16.9161 84.1738 21.5701 88.2076C24.6643 91.1498 32.318 94.6052 38.1792 84.8885" stroke="#FFDF18" stroke-width="4"/>
+    <path d="M25.3189 151.285C24.7838 139.322 33.1606 137.657 39.3189 137.579C43.5863 137.721 51.6018 135.217 49.5246 124.061" stroke="#FFDF18" stroke-width="4"/>
+    <path d="M86.127 38.2589C78.6454 28.9087 84.4323 22.6274 89.3616 18.9352C92.8934 16.5357 97.8939 9.78932 89.6419 2" stroke="#FFDF18" stroke-width="4"/>
+    <path d="M19.3 43.2723C29.4034 36.844 35.0231 43.2753 38.1616 48.5744C40.1657 52.3446 46.3327 58.0443 54.9675 50.6815" stroke="#FFDF18" stroke-width="4"/>
+  </g>
+  
+  <defs>
+    <radialGradient id="paint0_radial_17_70" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(90.1821 88.7404) rotate(90) scale(47.3348)">
+      <stop stop-color="#F5ED00"/>
+      <stop offset="1" stop-color="#FFDD1B"/>
+    </radialGradient>
+  </defs>
+</svg>`,
       '01n': `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 3a6 6 0 0 0 6 6 6 6 0 0 0-6 6 6 6 0 0 0-6-6 6 6 0 0 0 6-6z" fill="#F0F8FF"/>
         <circle cx="12" cy="12" r="3" fill="#FFD700"/>
