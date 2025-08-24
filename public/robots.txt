@@ -3,5 +3,7 @@ User-agent: *
 Allow: /
 Disallow: /_next/
 Disallow: /admin/
+Disallow: /terms
+Disallow: /privacy
 
 Sitemap: https://www.weathertour.org/sitemap.xml
