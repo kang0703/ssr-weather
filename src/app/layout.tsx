@@ -12,13 +12,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "갈래말래 날씨여행 - 날씨와 행사 정보",
-  description: "날씨와 함께하는 행사/축제 정보를 제공하는 웹사이트입니다.",
-  icons: {
-    icon: '/favicon.png',
-    shortcut: '/favicon.png',
-    apple: '/apple-favicon.png',
-  },
-  keywords: "날씨, 행사, 축제, 여행, 지역별 날씨, 날씨 예보, 한국 날씨, 갈래말래",
+  description: "날씨와 함께하는 행사/축제 정보를 제공하는 웹사이트입니다. 전국 17개 지역의 실시간 날씨와 행사 정보를 확인하세요.",
+  keywords: "날씨, 행사, 축제, 여행, 지역별 날씨, 날씨 예보, 한국 날씨, 갈래말래, 서울 날씨, 부산 날씨, 대구 날씨, 인천 날씨, 광주 날씨, 대전 날씨, 울산 날씨, 세종 날씨, 경기도 날씨, 충청북도 날씨, 충청남도 날씨, 전라북도 날씨, 전라남도 날씨, 경상북도 날씨, 경상남도 날씨, 강원도 날씨, 제주도 날씨",
   authors: [{ name: "갈래말래 날씨여행" }],
   creator: "갈래말래 날씨여행",
   publisher: "갈래말래 날씨여행",
@@ -30,6 +25,20 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.weathertour.org/'),
   alternates: {
     canonical: "https://www.weathertour.org/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code', // 구글 서치콘솔에서 받은 코드
   },
 };
 
