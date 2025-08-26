@@ -1,0 +1,26 @@
+{
+  "name": "갈래말래 날씨여행",
+  "short_name": "날씨여행",
+  "description": "날씨와 함께하는 행사/축제 정보를 제공하는 웹사이트",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3B82F6",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-key.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-favicon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

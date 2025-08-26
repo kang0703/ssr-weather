@@ -40,6 +40,21 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-verification-code', // 구글 서치콘솔에서 받은 코드
   },
+  // 파비콘 설정 추가
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-key.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-favicon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.png',
+  },
+  // 추가 메타데이터
+  manifest: '/manifest.json',
+  themeColor: '#3B82F6',
+  colorScheme: 'light',
 };
 
 export default function RootLayout({
