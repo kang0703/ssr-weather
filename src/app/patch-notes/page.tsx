@@ -67,7 +67,7 @@ export default function PatchNotesPage() {
 	*/
     {
       version: "1.1.0",
-      date: "2024-12-21",
+      date: "2025-08-27",
       type: "major",
       title: "행사 상세 페이지 및 UI 개선",
       description: "행사 상세 정보 표시 기능을 대폭 개선하고 사용자 경험을 향상시켰습니다.",
