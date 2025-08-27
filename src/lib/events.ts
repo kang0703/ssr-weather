@@ -4,12 +4,11 @@ export interface EventData {
   endDate: string;
   location: string;
   description: string;
+  overview?: string; // overview 필드 추가
   imageUrl?: string;
   contentId?: string;
   tel?: string;
   homepage?: string;
-  overview?: string;
-  images?: string[];
   category?: string;
   sponsor?: string;
   fee?: string;
@@ -94,6 +93,9 @@ export interface EventData {
   facebook?: string; // 페이스북
   youtube?: string; // 유튜브
   blog?: string; // 블로그
+  
+  // 이미지 정보 (새로 추가)
+  images?: string[]; // 추가 이미지 URL 배열
 }
 
 // 개별 행사 상세정보 조회 함수 수정
@@ -108,15 +110,55 @@ export async function getEventDetail(
   const baseUrl = 'https://apis.data.go.kr/B551011/KorService2';
   
   try {
-    // 1. 기본 상세정보 조회 - detailCommon1 (원래대로 복원)
-    const detailUrl = `${baseUrl}/detailCommon1?serviceKey=${encodeURIComponent(apiKey)}&contentId=${contentId}&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&defaultYN=Y&firstImageYN=Y&areacodeYN=Y&catcodeYN=Y&addrinfoYN=Y&mapinfoYN=Y&overviewYN=Y`;
+    // 1. searchFestival2로 기본 정보 조회 - 리스트와 동일한 방식으로 변경
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    
+    const eventStartDate = `${year}${month}01`;
+    const eventEndDate = `${year}${month}${day}`;
+    
+    // 리스트와 동일한 파라미터 사용
+    const festivalUrl = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
+    
+    let festivalItem = null;
+    try {
+      console.log('Festival API URL:', festivalUrl);
+      const festivalRes = await fetch(festivalUrl);
+      console.log('Festival API 응답 상태:', festivalRes.status, festivalRes.ok);
+      
+      if (festivalRes.ok) {
+        const festivalData = await festivalRes.json();
+        console.log('Festival API 전체 응답:', festivalData);
+        
+        // contentId로 필터링하여 해당 행사 찾기
+        const allItems = (festivalData as any).response?.body?.items?.item || [];
+        festivalItem = allItems.find((item: any) => item.contentid === contentId);
+        
+        console.log('Festival API 응답:', festivalItem);
+        console.log('Festival 날짜 정보:', {
+          eventstartdate: festivalItem?.eventstartdate,
+          eventenddate: festivalItem?.eventenddate,
+          startdate: festivalItem?.startdate,
+          enddate: festivalItem?.enddate
+        });
+      } else {
+        const errorText = await festivalRes.text();
+        console.log('Festival API 에러 응답:', errorText);
+      }
+    } catch (festivalError) {
+      console.log('Festival API 호출 실패:', festivalError);
+    }
+
+    // 2. 기본 상세정보 조회
+    const detailUrl = `${baseUrl}/detailCommon2?serviceKey=${encodeURIComponent(apiKey)}&MobileApp=WeatherTravel&MobileOS=ETC&pageNo=1&numOfRows=10&contentId=${contentId}&_type=json`;
     
     const detailRes = await fetch(detailUrl);
     
     if (!detailRes.ok) {
       const errorText = await detailRes.text();
       
-      // API 키 문제인지 확인
       if (errorText.includes('Policy Falsified') || errorText.includes('Service Not Found')) {
         throw new Error('API 키가 잘못되었거나 만료되었습니다. 공공데이터포털에서 API 키를 확인해주세요.');
       }
@@ -125,19 +167,30 @@ export async function getEventDetail(
     }
     
     const detailData = await detailRes.json();
-    
     const detailItem = (detailData as any).response?.body?.items?.item?.[0];
+    
     if (!detailItem) {
       return null;
     }
     
+    // 디버깅용 로그 추가
+    console.log('Detail API 응답:', detailItem);
+    console.log('Detail 날짜 관련 필드들:', {
+      eventstartdate: detailItem.eventstartdate,
+      eventenddate: detailItem.eventenddate,
+      startdate: detailItem.startdate,
+      enddate: detailItem.enddate,
+      eventstart: detailItem.eventstart,
+      eventend: detailItem.eventend
+    });
+
     // contentTypeId 추출
     const contentTypeId = detailItem.contenttypeid;
     
-    // 2. 소개정보 조회 - detailIntro1 (원래대로 복원)
+    // 3. 소개정보 조회 - detailIntro2로 변경
     let introItem = null;
     if (contentTypeId) {
-      const introUrl = `${baseUrl}/detailIntro1?serviceKey=${encodeURIComponent(apiKey)}&contentId=${contentId}&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&contentTypeId=${contentTypeId}`;
+      const introUrl = `${baseUrl}/detailIntro2?serviceKey=${encodeURIComponent(apiKey)}&MobileApp=WeatherTravel&MobileOS=ETC&pageNo=1&numOfRows=10&contentId=${contentId}&_type=json&contentTypeId=${contentTypeId}`;
       
       try {
         const introRes = await fetch(introUrl);
@@ -150,10 +203,10 @@ export async function getEventDetail(
       }
     }
     
-    // 3. 반복정보 조회 - detailInfo1 (원래대로 복원)
+    // 4. 반복정보 조회 - detailInfo2로 변경
     let infoItem = null;
     if (contentTypeId) {
-      const infoUrl = `${baseUrl}/detailInfo1?serviceKey=${encodeURIComponent(apiKey)}&contentId=${contentId}&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&contentTypeId=${contentTypeId}`;
+      const infoUrl = `${baseUrl}/detailInfo2?serviceKey=${encodeURIComponent(apiKey)}&MobileApp=WeatherTravel&MobileOS=ETC&pageNo=1&numOfRows=10&contentId=${contentId}&_type=json&contentTypeId=${contentTypeId}`;
       
       try {
         const infoRes = await fetch(infoUrl);
@@ -166,9 +219,9 @@ export async function getEventDetail(
       }
     }
     
-    // 4. 이미지 정보 조회 - detailImage1 (원래대로 복원)
+    // 5. 이미지 정보 조회 - detailImage2로 변경
     let imageItems = [];
-    const imageUrl = `${baseUrl}/detailImage1?serviceKey=${encodeURIComponent(apiKey)}&contentId=${contentId}&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&imageYN=Y&subImageYN=Y`;
+    const imageUrl = `${baseUrl}/detailImage2?serviceKey=${encodeURIComponent(apiKey)}&MobileApp=WeatherTravel&MobileOS=ETC&pageNo=1&numOfRows=10&contentId=${contentId}&_type=json`;
     
     try {
       const imageRes = await fetch(imageUrl);
@@ -180,18 +233,26 @@ export async function getEventDetail(
       // 이미지 정보 조회 실패 시 무시
     }
     
-    // 결과 데이터 구성 (기존과 동일)
+    // 결과 데이터 구성 - festival API에서 날짜 정보 우선 사용
     const result = {
-      title: detailItem.title || '제목 없음',
-      startDate: detailItem.eventstartdate || '',
-      endDate: detailItem.eventenddate || '',
-      location: detailItem.addr1 || '위치 정보 없음',
-      description: detailItem.overview || '설명 없음',
-      imageUrl: forceHttps(detailItem.firstimage || detailItem.firstimage2),
-      contentId: detailItem.contentid,
-      tel: detailItem.tel || '',
-      homepage: detailItem.homepage || '',
-      category: detailItem.cat1 || '축제/행사',
+      title: detailItem.title || festivalItem?.title || '제목 없음',
+      // 날짜 정보는 festival API에서 가져온 것 우선 사용
+      startDate: festivalItem?.eventstartdate || 
+                 detailItem.eventstartdate || 
+                 detailItem.startdate || 
+                 '',
+      endDate: festivalItem?.eventenddate || 
+               detailItem.eventenddate || 
+               detailItem.enddate || 
+               '',
+      location: detailItem.addr1 || festivalItem?.addr1 || '위치 정보 없음',
+      description: detailItem.overview || festivalItem?.overview || '설명 없음',
+      overview: detailItem.overview || festivalItem?.overview || '',
+      imageUrl: forceHttps(detailItem.firstimage || detailItem.firstimage2 || festivalItem?.firstimage || festivalItem?.firstimage2),
+      contentId: detailItem.contentid || festivalItem?.contentid,
+      tel: detailItem.tel || festivalItem?.tel || '',
+      homepage: detailItem.homepage || festivalItem?.homepage || '',
+      category: detailItem.cat1 || festivalItem?.cat1 || '축제/행사',
       
       // 카테고리 상세 정보
       cat1: detailItem.cat1 || '',
@@ -228,15 +289,22 @@ export async function getEventDetail(
       images: imageItems.map((img: any) => forceHttps(img.originimgurl || img.smallimageurl)).filter(Boolean),
     };
     
+    // 날짜 정보 디버깅 로그
+    console.log('최종 날짜 정보:', {
+      startDate: result.startDate,
+      endDate: result.endDate,
+      startDateFormatted: result.startDate ? `${result.startDate.substring(0,4)}.${result.startDate.substring(4,6)}.${result.startDate.substring(6,8)}` : '없음',
+      endDateFormatted: result.endDate ? `${result.endDate.substring(0,4)}.${result.endDate.substring(4,6)}.${result.endDate.substring(6,8)}` : '없음'
+    });
+    
     return result;
     
   } catch (error) {
-    console.error('행사 상세정보 API 오류:', error);
     throw error;
   }
 }
 
-// 전국 행사 정보를 가져오는 함수 개선
+// 전국 행사 정보를 가져오는 함수 개선 - 단순화
 export async function getAllEvents(apiKey: string): Promise<EventData[]> {
   if (!apiKey) {
     throw new Error('공공데이터 API 키가 설정되지 않았습니다.');
@@ -245,16 +313,10 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
   const baseUrl = 'https://apis.data.go.kr/B551011/KorService2';
   
   try {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const day = String(currentDate.getDate()).padStart(2, '0');
+    // 단순한 API 호출로 변경 (복잡한 날짜 파라미터 제거)
+    const url = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json`;
     
-    const eventStartDate = `${year}${month}01`;
-    const eventEndDate = `${year}${month}${day}`;
-    
-    // 전국 행사 정보 조회 (지역 코드 없이)
-    const url = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=50&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json&arrange=C&eventStartDate=${eventStartDate}&eventEndDate=${eventEndDate}`;
+    console.log('전국 행사 API 호출 URL:', url);
     
     const response = await fetch(url);
     
@@ -264,6 +326,7 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
     
     // 응답 텍스트를 먼저 확인
     const responseText = await response.text();
+    console.log('API 응답 텍스트:', responseText.substring(0, 500)); // 처음 500자만 로그
     
     // JSON 파싱 시도
     let data;
@@ -274,28 +337,38 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
     }
     
     if (data.response?.body?.items?.item) {
-      const events = data.response.body.items.item.map((item: any) => ({
-        title: item.title || '제목 없음',
-        startDate: item.eventstartdate || '',
-        endDate: item.eventenddate || '',
-        location: item.addr1 || '위치 정보 없음',
-        description: item.overview || '설명 없음',
-        imageUrl: forceHttps(item.firstimage || item.firstimage2),
-        contentId: item.contentid,
-        tel: item.tel || '',
-        homepage: item.homepage || '',
-        category: item.cat1 || '축제/행사',
-        areaCode: item.areacode || '',
-        sigunguCode: item.sigungucode || '',
-      }));
+      const events = data.response.body.items.item.map((item: any) => {
+        // 날짜 정보 디버깅
+        console.log('행사 날짜 정보:', {
+          title: item.title,
+          eventstartdate: item.eventstartdate,
+          eventenddate: item.eventenddate,
+          startdate: item.startdate,
+          enddate: item.enddate
+        });
+        
+        return {
+          title: item.title || '제목 없음',
+          startDate: item.eventstartdate || item.startdate || '',
+          endDate: item.eventenddate || item.enddate || '',
+          location: item.addr1 || '위치 정보 없음',
+          description: item.overview || '설명 없음',
+          imageUrl: forceHttps(item.firstimage || item.firstimage2),
+          contentId: item.contentid,
+          tel: item.tel || '',
+          homepage: item.homepage || '',
+          category: item.cat1 || '축제/행사',
+          areaCode: item.areacode || '',
+          sigunguCode: item.sigungucode || '',
+        };
+      });
       
       return events;
     }
     
     return [];
   } catch (error) {
-    console.error('전국 행사 API 오류:', error);
-    throw error; // 에러를 다시 던져서 상위에서 처리할 수 있도록
+    throw error;
   }
 }
 

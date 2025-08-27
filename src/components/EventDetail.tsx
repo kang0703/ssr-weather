@@ -36,39 +36,65 @@ export default function EventDetail({ eventId }: EventDetailProps) {
     return url;
   };
 
-  // 날짜 형식을 읽기 쉽게 변환하는 함수
+  // 날짜 형식을 읽기 쉽게 변환하는 함수 개선
   const formatDate = (dateString: string): string => {
-    if (!dateString || dateString.length !== 8) return '날짜 정보 없음';
+    if (!dateString || dateString.length !== 8) {
+      console.log('날짜 형식 오류:', dateString);
+      return '날짜 정보 없음';
+    }
     
-    const year = dateString.substring(0, 4);
-    const month = dateString.substring(4, 6);
-    const day = dateString.substring(6, 8);
-    
-    return `${year}년 ${month}월 ${day}일`;
+    try {
+      const year = dateString.substring(0, 4);
+      const month = dateString.substring(4, 6);
+      const day = dateString.substring(6, 8);
+      
+      // 유효한 날짜인지 확인
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      if (isNaN(date.getTime())) {
+        console.log('유효하지 않은 날짜:', dateString);
+        return '날짜 정보 없음';
+      }
+      
+      return `${year}.${month}.${day}`;
+    } catch (error) {
+      console.log('날짜 파싱 오류:', error);
+      return '날짜 정보 없음';
+    }
   };
 
-  // 기간 계산 함수
+  // 기간 계산 함수 개선
   const calculateDuration = (startDate: string, endDate: string): string => {
     if (!startDate || !endDate || startDate.length !== 8 || endDate.length !== 8) {
+      console.log('기간 계산 오류 - 시작일:', startDate, '종료일:', endDate);
       return '기간 정보 없음';
     }
     
-    const start = new Date(
-      parseInt(startDate.substring(0, 4)),
-      parseInt(startDate.substring(4, 6)) - 1,
-      parseInt(startDate.substring(6, 8))
-    );
-    
-    const end = new Date(
-      parseInt(endDate.substring(0, 4)),
-      parseInt(endDate.substring(4, 6)) - 1,
-      parseInt(endDate.substring(6, 8))
-    );
-    
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    
-    return `${diffDays}일간`;
+    try {
+      const start = new Date(
+        parseInt(startDate.substring(0, 4)),
+        parseInt(startDate.substring(4, 6)) - 1,
+        parseInt(startDate.substring(6, 8))
+      );
+      
+      const end = new Date(
+        parseInt(endDate.substring(0, 4)),
+        parseInt(endDate.substring(4, 6)) - 1,
+        parseInt(endDate.substring(6, 8))
+      );
+      
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        console.log('유효하지 않은 날짜로 기간 계산 실패');
+        return '기간 정보 없음';
+      }
+      
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      
+      return `${diffDays}일간`;
+    } catch (error) {
+      console.log('기간 계산 오류:', error);
+      return '기간 정보 없음';
+    }
   };
 
   // 날짜/시간 형식을 읽기 쉽게 변환하는 함수
@@ -120,15 +146,30 @@ export default function EventDetail({ eventId }: EventDetailProps) {
         const isContentId = /^\d+$/.test(eventId);
         
         if (isContentId) {
-          // 숫자인 경우 contentId로 간주하지만, API 호출하지 않고 세션스토리지에서 바로 가져오기
-          const storedEvent = sessionStorage.getItem(`event_${eventId}`);
-          
-          if (storedEvent) {
-            const eventData = JSON.parse(storedEvent);
-            setEvent(eventData);
-          } else {
-            // 세션스토리지에 없으면 에러 처리
-            throw new Error('세션스토리지에서 행사 정보를 찾을 수 없습니다.');
+          // 숫자인 경우 contentId로 간주하여 API 호출
+          try {
+            const response = await fetch(`/api/events/${eventId}`);
+            if (response.ok) {
+              const data = await response.json() as { success: boolean; event?: EventData };
+              if (data.success && data.event) {
+                setEvent(data.event);
+                // 세션스토리지에도 저장 (향후 빠른 접근을 위해)
+                sessionStorage.setItem(`event_${eventId}`, JSON.stringify(data.event));
+              } else {
+                throw new Error('API에서 행사 정보를 찾을 수 없습니다.');
+              }
+            } else {
+              throw new Error('API 요청에 실패했습니다.');
+            }
+          } catch (apiError) {
+            // API 호출 실패 시 세션스토리지에서 시도
+            const storedEvent = sessionStorage.getItem(`event_${eventId}`);
+            if (storedEvent) {
+              const eventData = JSON.parse(storedEvent);
+              setEvent(eventData);
+            } else {
+              throw new Error('API 호출과 세션스토리지 모두에서 행사 정보를 찾을 수 없습니다.');
+            }
           }
         } else {
           // 숫자가 아닌 경우 해시 ID로 간주하여 세션스토리지에서 데이터 가져오기
@@ -241,7 +282,7 @@ export default function EventDetail({ eventId }: EventDetailProps) {
           
           {/* 정보 목록 */}
           <div className="divide-y divide-gray-100">
-            {/* 기간 정보 */}
+            {/* 기간 정보 - 디버깅 정보 추가 */}
             <div className="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
               <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
                 <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,6 +293,10 @@ export default function EventDetail({ eventId }: EventDetailProps) {
                 <h4 className="font-semibold text-gray-900">행사 기간</h4>
                 <p className="text-gray-600 text-sm">
                   {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
+                </p>
+                {/* 디버깅용 원본 데이터 표시 */}
+                <p className="text-xs text-gray-400 mt-1">
+                  원본: {event.startDate || '없음'} ~ {event.endDate || '없음'}
                 </p>
               </div>
               <div className="ml-4">
@@ -326,44 +371,17 @@ export default function EventDetail({ eventId }: EventDetailProps) {
               </div>
             )}
 
-            {/* 홈페이지 정보 */}
-            {event.homepage && (
-              <div className="flex items-center px-6 py-4 hover:bg-gray-50 transition-colors">
-                <div className="flex-shrink-0 w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center mr-4">
-                  <svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900">공식 홈페이지</h4>
-                  <p className="text-gray-600 text-sm break-all">{event.homepage}</p>
-                </div>
-                <div className="ml-4">
-                  <button
-                    onClick={() => {
-                      if (event.homepage && event.homepage.trim() !== '') {
-                        window.open(event.homepage, '_blank');
-                      } else {
-                        alert('홈페이지 정보가 없습니다.');
-                      }
-                    }}
-                    className="inline-flex items-center px-3 py-1.5 bg-cyan-100 text-cyan-700 text-xs font-medium rounded-lg hover:bg-cyan-200 transition-colors"
-                  >
-                    🔗 방문
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* 상세 설명 */}
-        {event.description && event.description !== '설명 없음' && event.description.trim() !== '' && (
+        {/* 상세 설명 - overview 정보 우선 표시 */}
+        {(event.overview || event.description) && (
           <div className="border-t pt-6">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">상세 정보</h3>
             <div className="prose max-w-none">
+              {/* overview가 있으면 overview를, 없으면 description을 사용 */}
               <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm">
-                {event.description}
+                {event.overview || event.description}
               </p>
             </div>
             
@@ -398,27 +416,7 @@ export default function EventDetail({ eventId }: EventDetailProps) {
           </div>
         )}
 
-        {/* 지도 섹션 추가 (좌표 정보가 있는 경우) */}
-        {event.mapX && event.mapY && (
-          <div className="border-t pt-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">위치 정보</h3>
-            <div className="bg-gray-100 p-4 rounded-lg">
-              <p className="text-sm text-gray-600 mb-2">
-                📍 {event.location}
-                {event.zipCode && ` (${event.zipCode})`}
-              </p>
-              <p className="text-xs text-gray-500">
-                좌표: {event.mapX}, {event.mapY}
-              </p>
-              <button
-                onClick={() => window.open(`https://www.google.com/maps?q=${event.mapY},${event.mapX}`, '_blank')}
-                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
-              >
-                🗺️ Google Maps에서 보기
-              </button>
-            </div>
-          </div>
-        )}
+
 
         {/* 추가 정보 섹션에 새로운 정보들 표시 */}
         {/* 이용 정보 섹션 */}
@@ -739,20 +737,19 @@ export default function EventDetail({ eventId }: EventDetailProps) {
             >
               목록으로 돌아가기
             </button>
+            
+            {/* 홈페이지 링크 - href에서 URL만 추출 */}
             {event.homepage && (
-              <button
-                onClick={() => {
-                  if (event.homepage && event.homepage.trim() !== '') {
-                    window.open(event.homepage, '_blank');
-                  } else {
-                    alert('홈페이지 정보가 없습니다.');
-                  }
-                }}
-                className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              <a
+                href={event.homepage.match(/href=["']([^"']+)["']/)?.[1] || ''}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-center inline-block"
               >
-                홈페이지 방문
-              </button>
+                 홈페이지 방문
+              </a>
             )}
+            
             <button
               onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(event.location)}`, '_blank')}
               className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
