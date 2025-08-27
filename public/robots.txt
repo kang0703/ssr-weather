@@ -1,21 +1,17 @@
-# 갈래말래 날씨여행 robots.txt
+# weathertour.org robots.txt (애드센스 승인 최적화)
 User-agent: *
 Allow: /
-
-# Next.js 정적 파일 허용 (SEO에 필요)
 Allow: /_next/static/
 Allow: /_next/image/
 
-# 관리자 및 개인정보 페이지 차단
+# 관리자 및 API 차단
 Disallow: /admin/
 Disallow: /api/
-Disallow: /_next/
+
+# 불필요한 페이지 차단
 Disallow: /terms
 Disallow: /privacy
 
-# 사이트맵 및 정적 파일
+# 사이트맵 등록
 Sitemap: https://www.weathertour.org/sitemap.xml
 Sitemap: https://www.weathertour.org/sitemap-regions.xml
-
-# 크롤링 지연 설정 (서버 부하 방지)
-Crawl-delay: 1
