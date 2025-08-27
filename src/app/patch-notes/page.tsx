@@ -66,6 +66,32 @@ export default function PatchNotesPage() {
 
 	*/
     {
+      version: "1.1.0",
+      date: "2024-12-21",
+      type: "minor",
+      type: "major",
+      title: "행사 상세 페이지 및 UI 개선",
+      description: "행사 상세 정보 표시 기능을 대폭 개선하고 사용자 경험을 향상시켰습니다.",
+      features: [
+        "행사 상세 페이지 완전 재구현",
+        "EventDetail 컴포넌트로 상세 정보 표시",
+        "행사 기간 정보 정확한 표시 구현",
+        "홈페이지 링크를 a 태그로 변경하여 새창 열기 지원",
+        "이모지 제거로 깔끔한 UI 구현"
+      ],
+      improvements: [
+        "행사 정보 표시 방식 개선",
+        "홈페이지 링크 클릭 시 새창에서 열리도록 개선",
+        "사이트맵 도메인을 weathertour.org로 업데이트",
+        "전체적인 UI/UX 개선"
+      ],
+      fixes: [
+        "행사 기간 정보가 표시되지 않는 문제 해결",
+        "홈페이지 링크 클릭 시 404 에러 문제 해결",
+        "홈페이지 링크 HTML 파싱 문제 해결"
+      ]
+    },
+    {
       version: "1.0.0",
       date: "2025-08-19",
       type: "major",
