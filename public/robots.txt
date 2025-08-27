@@ -1,17 +1,11 @@
-# weathertour.org robots.txt (애드센스 승인 최적화)
+# *
 User-agent: *
 Allow: /
-Allow: /_next/static/
-Allow: /_next/image/
-
-# 관리자 및 API 차단
-Disallow: /admin/
 Disallow: /api/
+Disallow: /admin/
 
-# 불필요한 페이지 차단
-Disallow: /terms
-Disallow: /privacy
+# Host
+Host: https://www.weathertour.org
 
-# 사이트맵 등록
+# Sitemaps
 Sitemap: https://www.weathertour.org/sitemap.xml
-Sitemap: https://www.weathertour.org/sitemap-regions.xml
