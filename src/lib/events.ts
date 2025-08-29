@@ -275,6 +275,17 @@ export async function getEventDetail(
   }
 }
 
+// API 응답 타입 정의 추가
+interface PublicDataResponse {
+  response?: {
+    body?: {
+      items?: {
+        item?: any[];
+      };
+    };
+  };
+}
+
 // 전국 행사 정보를 가져오는 함수 개선 - 단순화
 export async function getAllEvents(apiKey: string): Promise<EventData[]> {
   if (!apiKey) {
@@ -293,7 +304,7 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
       throw new Error(`API 응답 실패: ${response.status} ${response.statusText}`);
     }
     
-    const data = await response.json();
+    const data = await response.json() as PublicDataResponse;
     
     if (data.response?.body?.items?.item) {
       const events = data.response.body.items.item.map((item: any) => {
