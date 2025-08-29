@@ -124,25 +124,15 @@ export async function getEventDetail(
     
     let festivalItem = null;
     try {
-      console.log('Festival API URL:', festivalUrl);
       const festivalRes = await fetch(festivalUrl);
-      console.log('Festival API 응답 상태:', festivalRes.status, festivalRes.ok);
       
       if (festivalRes.ok) {
         const festivalData = await festivalRes.json();
-        console.log('Festival API 전체 응답:', festivalData);
         
         // contentId로 필터링하여 해당 행사 찾기
         const allItems = (festivalData as any).response?.body?.items?.item || [];
         festivalItem = allItems.find((item: any) => item.contentid === contentId);
         
-        console.log('Festival API 응답:', festivalItem);
-        console.log('Festival 날짜 정보:', {
-          eventstartdate: festivalItem?.eventstartdate,
-          eventenddate: festivalItem?.eventenddate,
-          startdate: festivalItem?.startdate,
-          enddate: festivalItem?.enddate
-        });
       } else {
         const errorText = await festivalRes.text();
         console.log('Festival API 에러 응답:', errorText);
@@ -173,17 +163,6 @@ export async function getEventDetail(
       return null;
     }
     
-    // 디버깅용 로그 추가
-    console.log('Detail API 응답:', detailItem);
-    console.log('Detail 날짜 관련 필드들:', {
-      eventstartdate: detailItem.eventstartdate,
-      eventenddate: detailItem.eventenddate,
-      startdate: detailItem.startdate,
-      enddate: detailItem.enddate,
-      eventstart: detailItem.eventstart,
-      eventend: detailItem.eventend
-    });
-
     // contentTypeId 추출
     const contentTypeId = detailItem.contenttypeid;
     
@@ -222,7 +201,7 @@ export async function getEventDetail(
     // 5. 이미지 정보 조회 - detailImage2로 변경
     let imageItems = [];
     const imageUrl = `${baseUrl}/detailImage2?serviceKey=${encodeURIComponent(apiKey)}&MobileApp=WeatherTravel&MobileOS=ETC&pageNo=1&numOfRows=10&contentId=${contentId}&_type=json`;
-    
+
     try {
       const imageRes = await fetch(imageUrl);
       if (imageRes.ok) {
@@ -289,14 +268,6 @@ export async function getEventDetail(
       images: imageItems.map((img: any) => forceHttps(img.originimgurl || img.smallimageurl)).filter(Boolean),
     };
     
-    // 날짜 정보 디버깅 로그
-    console.log('최종 날짜 정보:', {
-      startDate: result.startDate,
-      endDate: result.endDate,
-      startDateFormatted: result.startDate ? `${result.startDate.substring(0,4)}.${result.startDate.substring(4,6)}.${result.startDate.substring(6,8)}` : '없음',
-      endDateFormatted: result.endDate ? `${result.endDate.substring(0,4)}.${result.endDate.substring(4,6)}.${result.endDate.substring(6,8)}` : '없음'
-    });
-    
     return result;
     
   } catch (error) {
@@ -316,36 +287,16 @@ export async function getAllEvents(apiKey: string): Promise<EventData[]> {
     // 단순한 API 호출로 변경 (복잡한 날짜 파라미터 제거)
     const url = `${baseUrl}/searchFestival2?serviceKey=${encodeURIComponent(apiKey)}&numOfRows=100&pageNo=1&MobileOS=ETC&MobileApp=WeatherTravel&_type=json`;
     
-    console.log('전국 행사 API 호출 URL:', url);
-    
     const response = await fetch(url);
     
     if (!response.ok) {
       throw new Error(`API 응답 실패: ${response.status} ${response.statusText}`);
     }
     
-    // 응답 텍스트를 먼저 확인
-    const responseText = await response.text();
-    console.log('API 응답 텍스트:', responseText.substring(0, 500)); // 처음 500자만 로그
-    
-    // JSON 파싱 시도
-    let data;
-    try {
-      data = JSON.parse(responseText);
-    } catch (parseError) {
-      throw new Error('API 응답이 유효한 JSON 형식이 아닙니다. API 키나 요청 형식을 확인해주세요.');
-    }
+    const data = await response.json();
     
     if (data.response?.body?.items?.item) {
       const events = data.response.body.items.item.map((item: any) => {
-        // 날짜 정보 디버깅
-        console.log('행사 날짜 정보:', {
-          title: item.title,
-          eventstartdate: item.eventstartdate,
-          eventenddate: item.eventenddate,
-          startdate: item.startdate,
-          enddate: item.enddate
-        });
         
         return {
           title: item.title || '제목 없음',
