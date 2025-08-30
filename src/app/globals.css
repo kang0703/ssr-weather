@@ -84,3 +84,40 @@ a:hover,
     max-width: 1536px;
   }
 }
+
+/* Swiper.js 스타일 오버라이드 */
+.swiper-button-next,
+.swiper-button-prev {
+  color: white !important;
+}
+
+/* 기본 화살표 제거 */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none !important;
+}
+
+.swiper-pagination-bullet {
+  background: white !important;
+  opacity: 0.7 !important;
+  width: 12px !important;
+  height: 12px !important;
+  margin: 0 4px !important;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1 !important;
+  background: #3b82f6 !important;
+  transform: scale(1) !important;
+}
+
+.swiper-zoom-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 페이징 위치 조정 */
+.swiper-pagination {
+  bottom: 80px !important;
+}

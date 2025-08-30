@@ -3,6 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { EventData } from '@/lib/events';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Keyboard, Zoom } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/zoom';
+import ImagePopupSlider from './ImagePopupSlider';
 
 interface EventDetailProps {
   eventId: string;
@@ -12,6 +19,10 @@ export default function EventDetail({ eventId }: EventDetailProps) {
   const [event, setEvent] = useState<EventData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [imagePopup, setImagePopup] = useState<{
+    isOpen: boolean;
+    initialIndex: number;
+  }>({ isOpen: false, initialIndex: 0 });
   const router = useRouter();
 
   // 이미지 URL을 HTTPS로 변환하는 함수 추가 (기존 코드 건드리지 않음)
@@ -198,6 +209,16 @@ export default function EventDetail({ eventId }: EventDetailProps) {
     router.back();
   };
 
+  // 이미지 팝업 열기 함수
+  const openImagePopup = (index: number) => {
+    setImagePopup({ isOpen: true, initialIndex: index });
+  };
+
+  // 이미지 팝업 닫기 함수
+  const closeImagePopup = () => {
+    setImagePopup({ isOpen: false, initialIndex: 0 });
+  };
+
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-8">
@@ -257,6 +278,7 @@ export default function EventDetail({ eventId }: EventDetailProps) {
             src={forceHttps(event.imageUrl)}
             alt={event.title}
             className="w-full h-full object-cover"
+            onClick={() => openImagePopup(0)} // 메인 이미지도 클릭 가능하도록 추가
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
@@ -397,18 +419,34 @@ export default function EventDetail({ eventId }: EventDetailProps) {
             <h3 className="text-xl font-semibold text-gray-900 mb-4">추가 이미지</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {event.images.slice(0, 8).map((imageUrl, index) => (
-                <div key={index} className="aspect-square rounded-lg overflow-hidden">
+                <div 
+                  key={index} 
+                  className="aspect-square rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200 relative group"
+                  onClick={() => openImagePopup(index)}
+                >
                   <img
                     src={forceHttps(imageUrl)}
                     alt={`${event.title} 이미지 ${index + 1}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                     }}
                   />
+                  {/* 클릭 가능함을 나타내는 오버레이 - 이미지 영역 전체에 적용 */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
+            {/* 이미지 클릭 안내 */}
+            <p className="text-sm text-gray-500 mt-2 text-center">
+              추가 이미지를 클릭하면 전체화면으로 볼 수 있습니다
+            </p>
           </div>
         )}
 
@@ -755,6 +793,16 @@ export default function EventDetail({ eventId }: EventDetailProps) {
           </div>
         </div>
       </div>
+      {/* 이미지 팝업 슬라이더 */}
+      {event && event.images && event.images.length > 0 && (
+        <ImagePopupSlider
+          images={event.images}
+          initialIndex={imagePopup.initialIndex}
+          isOpen={imagePopup.isOpen}
+          onClose={closeImagePopup}
+          forceHttps={forceHttps}
+        />
+      )}
     </div>
   );
 }
