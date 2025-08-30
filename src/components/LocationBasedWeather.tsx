@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { WeatherData, ForecastData } from '@/lib/weather';
-import { findNearestKoreanCity, KOREAN_CITIES } from '@/lib/location';
+import { findNearestKoreanCity, KOREAN_CITIES, isWithinCityBoundary } from '@/lib/location';
 import EventsSection from './EventsSection';
 import WeatherIcon from './WeatherIcon';
 
@@ -320,7 +320,18 @@ export default function LocationBasedWeather() {
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
                         const { latitude: lat, longitude: lon } = position.coords;
-                        const nearestCity = findNearestKoreanCity(lat, lon);
+                        
+                        // 더 정확한 위치 매칭을 위해 여러 방법 시도
+                        let nearestCity = findNearestKoreanCity(lat, lon);
+                        
+                        // 만약 가장 가까운 도시가 다른 지역이라면, 
+                        // 현재 좌표가 특정 도시 경계 내에 있는지 확인
+                        for (const city of KOREAN_CITIES) {
+                            if (isWithinCityBoundary(lat, lon, city, 8)) { // 8km 반경 내
+                                nearestCity = city;
+                                break;
+                            }
+                        }
                         
                         const locationData: LocationData = {
                             lat,

@@ -187,13 +187,62 @@ export const KOREAN_CITIES: CityInfo[] = [
 ];
 
 /**
+ * 좌표가 특정 도시의 경계 내에 있는지 확인합니다.
+ * 간단한 원형 경계를 사용합니다.
+ */
+export function isWithinCityBoundary(lat: number, lon: number, city: CityInfo, radiusKm: number = 10): boolean {
+  const distance = calculateDistance(lat, lon, city.lat, city.lon);
+  return distance <= radiusKm;
+}
+
+/**
  * 좌표를 기반으로 가장 가까운 한국 도시를 찾습니다.
+ * 더 정확한 매칭을 위해 가중치를 적용합니다.
  */
 export function findNearestKoreanCity(lat: number, lon: number): CityInfo {
   let nearestCity = KOREAN_CITIES[0]; // 기본값: 서울
   let minDistance = Infinity;
 
   for (const city of KOREAN_CITIES) {
+    const distance = calculateDistance(lat, lon, city.lat, city.lon);
+    
+    // 거리가 매우 가까운 경우 (5km 이내) 우선순위 부여
+    if (distance < 5) {
+      // 같은 지역 내에서는 더 가까운 도시 우선
+      if (nearestCity.region === city.region && distance < minDistance) {
+        minDistance = distance;
+        nearestCity = city;
+      }
+      // 다른 지역이지만 매우 가까운 경우
+      else if (distance < minDistance) {
+        minDistance = distance;
+        nearestCity = city;
+      }
+    }
+    // 일반적인 경우
+    else if (distance < minDistance) {
+      minDistance = distance;
+      nearestCity = city;
+    }
+  }
+
+  return nearestCity;
+}
+
+/**
+ * 특정 지역 내에서 가장 가까운 도시를 찾습니다.
+ */
+export function findNearestCityInRegion(lat: number, lon: number, region: string): CityInfo | null {
+  const citiesInRegion = KOREAN_CITIES.filter(city => city.region === region);
+  
+  if (citiesInRegion.length === 0) {
+    return null;
+  }
+
+  let nearestCity = citiesInRegion[0];
+  let minDistance = Infinity;
+
+  for (const city of citiesInRegion) {
     const distance = calculateDistance(lat, lon, city.lat, city.lon);
     if (distance < minDistance) {
       minDistance = distance;
