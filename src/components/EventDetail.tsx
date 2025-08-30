@@ -294,10 +294,6 @@ export default function EventDetail({ eventId }: EventDetailProps) {
                 <p className="text-gray-600 text-sm">
                   {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
                 </p>
-                {/* 디버깅용 원본 데이터 표시 */}
-                <p className="text-xs text-gray-400 mt-1">
-                  원본: {event.startDate || '없음'} ~ {event.endDate || '없음'}
-                </p>
               </div>
               <div className="ml-4">
                 <span className="inline-flex items-center px-2.5 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
