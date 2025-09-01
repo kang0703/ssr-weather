@@ -30,6 +30,11 @@ export default function Footer() {
                   패치노트
                 </Link>
               </li>
+              <li>
+                <Link href="/privacy-policy" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  개인정보 처리방침
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
