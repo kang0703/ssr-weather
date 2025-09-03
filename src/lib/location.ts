@@ -6,47 +6,47 @@ export interface CityInfo {
 }
 
 export const KOREAN_CITIES: CityInfo[] = [
-  // 광역시 및 특별시
-  { name: '서울특별시', region: 'seoul', lat: 37.5665, lon: 126.9780 },
-  { name: '부산광역시', region: 'busan', lat: 35.1796, lon: 129.0756 },
-  { name: '대구광역시', region: 'daegu', lat: 35.8714, lon: 128.6014 },
-  { name: '인천광역시', region: 'incheon', lat: 37.4563, lon: 126.7052 },
-  { name: '광주광역시', region: 'gwangju', lat: 35.1595, lon: 126.8526 },
-  { name: '대전광역시', region: 'daejeon', lat: 36.3504, lon: 127.3845 },
-  { name: '울산광역시', region: 'ulsan', lat: 35.5384, lon: 129.3114 },
-  { name: '세종시', region: 'sejong', lat: 36.4800, lon: 127.2890 },
+  // 광역시 및 특별시 (GitHub Gist 데이터 기반)
+  { name: '서울특별시', region: 'seoul', lat: 37.5636, lon: 126.9800 }, // Gist 데이터 적용
+  { name: '부산광역시', region: 'busan', lat: 35.1770, lon: 129.0770 }, // Gist 데이터 적용
+  { name: '대구광역시', region: 'daegu', lat: 35.8685, lon: 128.6036 }, // Gist 데이터 적용
+  { name: '인천광역시', region: 'incheon', lat: 37.4532, lon: 126.7074 }, // Gist 데이터 적용
+  { name: '광주광역시', region: 'gwangju', lat: 35.1570, lon: 126.8534 }, // Gist 데이터 적용
+  { name: '대전광역시', region: 'daejeon', lat: 36.3471, lon: 127.3866 }, // Gist 데이터 적용
+  { name: '울산광역시', region: 'ulsan', lat: 35.5354, lon: 129.3137 }, // Gist 데이터 적용
+  { name: '세종시', region: 'sejong', lat: 36.4800, lon: 127.2891 }, // Gist 데이터 적용
   
-  // 경기도 주요 도시들
+  // 경기도 주요 도시들 (GitHub Gist 데이터 기반 정확한 좌표)
   { name: '수원시', region: 'gyeonggi', lat: 37.2636, lon: 127.0286 },
   { name: '고양시', region: 'gyeonggi', lat: 37.6584, lon: 126.8320 },
-  { name: '성남시', region: 'gyeonggi', lat: 37.4449, lon: 127.1389 },
+  { name: '성남시', region: 'gyeonggi', lat: 37.4447, lon: 127.1389 },
   { name: '용인시', region: 'gyeonggi', lat: 37.2411, lon: 127.1776 },
-  { name: '부천시', region: 'gyeonggi', lat: 37.5035, lon: 126.7660 },
+  { name: '부천시', region: 'gyeonggi', lat: 37.5034, lon: 126.7660 },
   { name: '안산시', region: 'gyeonggi', lat: 37.3219, lon: 126.8309 },
   { name: '안양시', region: 'gyeonggi', lat: 37.3943, lon: 126.9568 },
-  { name: '평택시', region: 'gyeonggi', lat: 36.9920, lon: 127.1128 },
-  { name: '시흥시', region: 'gyeonggi', lat: 37.3799, lon: 126.8031 },
-  { name: '김포시', region: 'gyeonggi', lat: 37.6153, lon: 126.7155 },
-  { name: '광명시', region: 'gyeonggi', lat: 37.4792, lon: 126.8649 },
-  { name: '군포시', region: 'gyeonggi', lat: 37.3616, lon: 126.9352 },
-  { name: '오산시', region: 'gyeonggi', lat: 37.1498, lon: 127.0772 },
-  { name: '하남시', region: 'gyeonggi', lat: 37.5392, lon: 127.2148 },
-  { name: '이천시', region: 'gyeonggi', lat: 37.2720, lon: 127.4350 },
-  { name: '안성시', region: 'gyeonggi', lat: 37.0080, lon: 127.2797 },
-  { name: '의왕시', region: 'gyeonggi', lat: 37.3449, lon: 126.9482 },
-  { name: '양평군', region: 'gyeonggi', lat: 37.4912, lon: 127.4875 },
-  { name: '여주시', region: 'gyeonggi', lat: 37.2984, lon: 127.6370 },
-  { name: '과천시', region: 'gyeonggi', lat: 37.4291, lon: 126.9879 },
-  { name: '남양주시', region: 'gyeonggi', lat: 37.6364, lon: 127.2160 },
-  { name: '파주시', region: 'gyeonggi', lat: 37.8154, lon: 126.7947 },
-  { name: '양주시', region: 'gyeonggi', lat: 37.8324, lon: 127.0462 },
-  { name: '구리시', region: 'gyeonggi', lat: 37.5943, lon: 127.1296 },
-  { name: '포천시', region: 'gyeonggi', lat: 37.8949, lon: 127.2002 },
-  { name: '동두천시', region: 'gyeonggi', lat: 37.9036, lon: 127.0606 },
-  { name: '가평군', region: 'gyeonggi', lat: 37.8315, lon: 127.5105 },
-  { name: '연천군', region: 'gyeonggi', lat: 38.0966, lon: 127.0747 },
+  { name: '평택시', region: 'gyeonggi', lat: 36.9921, lon: 127.1127 },
+  { name: '시흥시', region: 'gyeonggi', lat: 37.3802, lon: 126.8028 },
+  { name: '김포시', region: 'gyeonggi', lat: 37.6152, lon: 126.7155 },
+  { name: '광명시', region: 'gyeonggi', lat: 37.4781, lon: 126.8643 },
+  { name: '군포시', region: 'gyeonggi', lat: 37.3614, lon: 126.9350 },
+  { name: '오산시', region: 'gyeonggi', lat: 37.1454, lon: 127.0668 },
+  { name: '하남시', region: 'gyeonggi', lat: 37.5393, lon: 127.2149 },
+  { name: '이천시', region: 'gyeonggi', lat: 37.2792, lon: 127.4425 },
+  { name: '안성시', region: 'gyeonggi', lat: 37.0100, lon: 127.2700 },
+  { name: '의왕시', region: 'gyeonggi', lat: 37.3444, lon: 126.9681 },
+  { name: '양평군', region: 'gyeonggi', lat: 37.4919, lon: 127.4872 },
+  { name: '여주시', region: 'gyeonggi', lat: 37.2950, lon: 127.6372 },
+  { name: '과천시', region: 'gyeonggi', lat: 37.4292, lon: 126.9875 },
+  { name: '남양주시', region: 'gyeonggi', lat: 37.6360, lon: 127.2165 }, // Gist 데이터와 일치
+  { name: '파주시', region: 'gyeonggi', lat: 37.7599, lon: 126.7802 },
+  { name: '양주시', region: 'gyeonggi', lat: 37.7853, lon: 127.0450 },
+  { name: '구리시', region: 'gyeonggi', lat: 37.5943, lon: 127.1295 },
+  { name: '포천시', region: 'gyeonggi', lat: 37.8947, lon: 127.2000 },
+  { name: '동두천시', region: 'gyeonggi', lat: 37.9038, lon: 127.0606 },
+  { name: '가평군', region: 'gyeonggi', lat: 37.8314, lon: 127.5094 },
+  { name: '연천군', region: 'gyeonggi', lat: 38.0964, lon: 127.0744 },
   
-  // 충청북도 주요 도시들
+  // 충청북도 주요 도시들 (GitHub Gist 데이터 기반)
   { name: '청주시', region: 'chungbuk', lat: 36.6424, lon: 127.4890 },
   { name: '충주시', region: 'chungbuk', lat: 36.9910, lon: 127.9260 },
   { name: '제천시', region: 'chungbuk', lat: 37.1326, lon: 128.1910 },
@@ -59,7 +59,7 @@ export const KOREAN_CITIES: CityInfo[] = [
   { name: '음성군', region: 'chungbuk', lat: 36.9350, lon: 127.6900 },
   { name: '단양군', region: 'chungbuk', lat: 36.9850, lon: 128.3650 },
   
-  // 충청남도 주요 도시들
+  // 충청남도 주요 도시들 (GitHub Gist 데이터 기반)
   { name: '천안시', region: 'chungnam', lat: 36.8150, lon: 127.1139 },
   { name: '공주시', region: 'chungnam', lat: 36.4464, lon: 127.1190 },
   { name: '보령시', region: 'chungnam', lat: 36.3334, lon: 126.6129 },
@@ -76,7 +76,7 @@ export const KOREAN_CITIES: CityInfo[] = [
   { name: '예산군', region: 'chungnam', lat: 36.6810, lon: 126.8450 },
   { name: '태안군', region: 'chungnam', lat: 36.7450, lon: 126.2980 },
   
-  // 전라북도 주요 도시들
+  // 전라북도 주요 도시들 (GitHub Gist 데이터 기반)
   { name: '전주시', region: 'jeonbuk', lat: 35.8242, lon: 127.1480 },
   { name: '군산시', region: 'jeonbuk', lat: 35.9670, lon: 126.7360 },
   { name: '익산시', region: 'jeonbuk', lat: 35.9480, lon: 126.9570 },
@@ -92,7 +92,7 @@ export const KOREAN_CITIES: CityInfo[] = [
   { name: '고창군', region: 'jeonbuk', lat: 35.4350, lon: 126.7020 },
   { name: '부안군', region: 'jeonbuk', lat: 35.7310, lon: 126.7320 },
   
-  // 전라남도 주요 도시들
+  // 전라남도 주요 도시들 (GitHub Gist 데이터 기반)
   { name: '목포시', region: 'jeonnam', lat: 34.8110, lon: 126.3920 },
   { name: '여수시', region: 'jeonnam', lat: 34.7600, lon: 127.6620 },
   { name: '순천시', region: 'jeonnam', lat: 34.9500, lon: 127.4870 },
@@ -116,8 +116,8 @@ export const KOREAN_CITIES: CityInfo[] = [
   { name: '진도군', region: 'jeonnam', lat: 34.4860, lon: 126.2630 },
   { name: '신안군', region: 'jeonnam', lat: 34.7900, lon: 126.3780 },
   
-  // 경상북도 주요 도시들
-  { name: '포항시', region: 'gyeongbuk', lat: 36.0320, lon: 129.3650 },
+  // 경상북도 주요 도시들 (GitHub Gist 데이터 기반)
+  { name: '포항시', region: 'gyeongbuk', lat: 36.0190, lon: 129.3435 },
   { name: '경주시', region: 'gyeongbuk', lat: 35.8560, lon: 129.2250 },
   { name: '김천시', region: 'gyeongbuk', lat: 36.1390, lon: 128.1130 },
   { name: '안동시', region: 'gyeongbuk', lat: 36.5680, lon: 128.7290 },
@@ -141,7 +141,7 @@ export const KOREAN_CITIES: CityInfo[] = [
   { name: '울진군', region: 'gyeongbuk', lat: 36.9930, lon: 129.4000 },
   { name: '울릉군', region: 'gyeongbuk', lat: 37.4840, lon: 130.9030 },
   
-  // 경상남도 주요 도시들
+  // 경상남도 주요 도시들 (GitHub Gist 데이터 기반)
   { name: '창원시', region: 'gyeongnam', lat: 35.2270, lon: 128.6810 },
   { name: '진주시', region: 'gyeongnam', lat: 35.1800, lon: 128.1080 },
   { name: '통영시', region: 'gyeongnam', lat: 34.8540, lon: 128.4330 },
@@ -161,8 +161,8 @@ export const KOREAN_CITIES: CityInfo[] = [
   { name: '거창군', region: 'gyeongnam', lat: 35.6870, lon: 127.9020 },
   { name: '합천군', region: 'gyeongnam', lat: 35.5660, lon: 128.1650 },
   
-  // 강원도 주요 도시들
-  { name: '춘천시', region: 'gangwon', lat: 37.8813, lon: 127.7300 },
+  // 강원도 주요 도시들 (GitHub Gist 데이터 기반)
+  { name: '춘천시', region: 'gangwon', lat: 37.8813, lon: 127.7298 },
   { name: '원주시', region: 'gangwon', lat: 37.3422, lon: 127.9200 },
   { name: '강릉시', region: 'gangwon', lat: 37.7519, lon: 128.8760 },
   { name: '동해시', region: 'gangwon', lat: 37.5230, lon: 129.1140 },
@@ -181,18 +181,67 @@ export const KOREAN_CITIES: CityInfo[] = [
   { name: '고성군', region: 'gangwon', lat: 38.3780, lon: 128.4670 },
   { name: '양양군', region: 'gangwon', lat: 38.0750, lon: 128.6190 },
   
-  // 제주도
+  // 제주도 (GitHub Gist 데이터 기반)
   { name: '제주시', region: 'jeju', lat: 33.4996, lon: 126.5312 },
   { name: '서귀포시', region: 'jeju', lat: 33.2541, lon: 126.5600 }
 ];
 
 /**
- * 좌표가 특정 도시의 경계 내에 있는지 확인합니다.
- * 간단한 원형 경계를 사용합니다.
+ * 개선된 위치 매칭 함수 - GitHub Gist 데이터 기반
  */
-export function isWithinCityBoundary(lat: number, lon: number, city: CityInfo, radiusKm: number = 10): boolean {
+export function findBestMatchingCity(lat: number, lon: number): CityInfo {
+  let bestMatch = KOREAN_CITIES[0]; // 기본값: 서울
+  let minDistance = Infinity;
+
+  // 모든 도시와의 거리를 계산하여 가장 가까운 도시 찾기
+  for (const city of KOREAN_CITIES) {
+    const distance = calculateDistance(lat, lon, city.lat, city.lon);
+    
+    if (distance < minDistance) {
+      minDistance = distance;
+      bestMatch = city;
+    }
+  }
+
+  // 디버깅을 위한 로그
+  console.log(`=== 위치 매칭 결과 ===`);
+  console.log(`현재 위치: ${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+  console.log(`감지된 도시: ${bestMatch.name} (${bestMatch.region})`);
+  console.log(`거리: ${minDistance.toFixed(2)}km`);
+
+  return bestMatch;
+}
+
+/**
+ * 좌표가 특정 도시의 경계 내에 있는지 확인합니다.
+ */
+export function isWithinCityBoundary(lat: number, lon: number, city: CityInfo, radiusKm: number = 5): boolean {
   const distance = calculateDistance(lat, lon, city.lat, city.lon);
   return distance <= radiusKm;
+}
+
+/**
+ * 위치 매칭 진단 함수 - GitHub Gist 데이터 기반
+ */
+export function diagnoseLocationMatching(lat: number, lon: number): void {
+  console.log('=== 위치 매칭 진단 (GitHub Gist 데이터 기반) ===');
+  console.log(`입력 좌표: ${lat}, ${lon}`);
+  
+  // 상위 10개 가까운 도시들 출력
+  const distances = KOREAN_CITIES.map(city => ({
+    name: city.name,
+    region: city.region,
+    distance: calculateDistance(lat, lon, city.lat, city.lon)
+  })).sort((a, b) => a.distance - b.distance);
+  
+  console.log('상위 10개 가까운 도시:');
+  distances.slice(0, 10).forEach((city, index) => {
+    console.log(`${index + 1}. ${city.name} (${city.region}) - ${city.distance.toFixed(2)}km`);
+  });
+  
+  // 최종 매칭 결과
+  const finalMatch = findBestMatchingCity(lat, lon);
+  console.log(`최종 매칭 결과: ${finalMatch.name} (${finalMatch.region})`);
 }
 
 /**
